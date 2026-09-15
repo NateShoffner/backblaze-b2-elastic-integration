@@ -1,0 +1,14 @@
+input: aws-s3
+vars:
+  application_key_id: "0040000000000000000000001"
+  application_key: "K004exampleexampleexampleexample"
+  region: us-west-004
+data_stream:
+  vars:
+    bucket_name: example-access-logs
+    exclude_operations: []
+    processors: |
+      - add_fields:
+          target: ''
+          fields:
+            environment: test

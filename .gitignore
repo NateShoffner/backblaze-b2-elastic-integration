@@ -1,0 +1,7 @@
+# elastic-package build output (repo root only; packages use _dev/build)
+/build/
+
+# Local credentials and scratch data
+.env
+*.local.yml
+samples/private/

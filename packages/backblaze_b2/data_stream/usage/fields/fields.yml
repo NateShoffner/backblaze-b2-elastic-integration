@@ -1,0 +1,67 @@
+- name: backblaze_b2.usage
+  type: group
+  description: Daily usage of a Backblaze B2 bucket, or of the account for the account-level row, from the usage report files. The account ID is stored in `cloud.account.id`, and the bucket ID and name in `entity.id` and `entity.name`. GB values use decimal gigabytes (10^9 bytes) and are rounded to two decimals by Backblaze.
+  fields:
+    - name: line_version
+      type: keyword
+      description: Revision number of the report file format.
+    - name: scope
+      type: keyword
+      description: Whether the row reports the usage of one bucket (`bucket`) or the account-level API transactions that Backblaze doesn't attribute to a bucket (`account`).
+    - name: group_id
+      type: keyword
+      description: Identifier of the Backblaze group the account belongs to, when the report is for a group member.
+    - name: reporting_location
+      type: keyword
+      description: Backblaze location (cluster) the usage was reported for, for example `us-west-004`.
+    - name: resource_name
+      type: keyword
+      description: Subscription identifier, for organization reports.
+    - name: resource_group_name
+      type: keyword
+      description: Resource group name, for organization reports.
+    - name: resource_group_id
+      type: keyword
+      description: Resource group identifier, for organization reports.
+    - name: uploaded_gb
+      type: double
+      description: Data uploaded during the day, in GB.
+    - name: deleted_gb
+      type: double
+      description: Data deleted during the day, in GB.
+    - name: downloaded_gb
+      type: double
+      description: Data downloaded during the day, in GB.
+    - name: downloaded_bytes
+      type: long
+      unit: byte
+      description: Data downloaded during the day, in bytes.
+    - name: downloaded_favored_bytes
+      type: long
+      unit: byte
+      description: Favored bytes downloaded during the day. Backblaze does not charge for favored bytes.
+    - name: stored_gb
+      type: double
+      description: Data stored, in GB.
+    - name: storage_byte_hours
+      type: long
+      description: Byte hours stored during the day. This is the billable storage measure and includes the free allocation.
+    - name: average_stored_bytes
+      type: long
+      unit: byte
+      description: Average number of bytes stored during the day, calculated as `storage_byte_hours` divided by 24. More precise than `stored_gb` for small buckets.
+    - name: api_txn_class_a
+      type: long
+      description: Number of class A API transactions during the day.
+    - name: api_txn_class_b
+      type: long
+      description: Number of class B API transactions during the day.
+    - name: api_txn_class_c
+      type: long
+      description: Number of class C API transactions during the day.
+    - name: api_txn_class_d
+      type: long
+      description: Number of class D API transactions during the day.
+    - name: api_txn_total
+      type: long
+      description: Total number of API transactions during the day, the sum of the class A, B, C, and D transactions.

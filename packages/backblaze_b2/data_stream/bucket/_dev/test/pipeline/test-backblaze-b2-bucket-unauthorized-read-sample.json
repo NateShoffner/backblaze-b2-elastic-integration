@@ -1,0 +1,8 @@
+{
+    "events": [
+        {
+            "@timestamp": "2026-09-14T12:00:00.000Z",
+            "message": "{\"accountId\":\"0a1b2c3d4e5f\",\"bucketId\":\"1a2b3c4d5e6f7a8b9c0d0008\",\"bucketInfo\":{},\"bucketName\":\"example-limited-key-view\",\"bucketType\":\"allPrivate\",\"corsRules\":[],\"defaultServerSideEncryption\":{\"isClientAuthorizedToRead\":false,\"value\":null},\"fileLockConfiguration\":{\"isClientAuthorizedToRead\":false,\"value\":null},\"lifecycleRules\":[],\"options\":[\"s3\"],\"replicationConfiguration\":{\"isClientAuthorizedToRead\":false,\"value\":null},\"revision\":6}"
+        }
+    ]
+}

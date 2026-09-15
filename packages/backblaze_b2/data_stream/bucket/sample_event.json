@@ -1,0 +1,112 @@
+{
+    "@timestamp": "2026-09-15T04:25:11.768Z",
+    "agent": {
+        "ephemeral_id": "b04d1670-ebca-495c-b261-5b1529e19202",
+        "id": "4169ce9b-b35d-451b-9979-bd41bed9198f",
+        "name": "elastic-agent-20049",
+        "type": "filebeat",
+        "version": "9.4.3"
+    },
+    "backblaze_b2": {
+        "bucket": {
+            "bucket_info": {
+                "environment": "production"
+            },
+            "bucket_type": "allPrivate",
+            "cors_rules_count": 0,
+            "default_server_side_encryption": {
+                "algorithm": "AES256",
+                "is_client_authorized_to_read": true,
+                "is_enabled": true,
+                "mode": "SSE-B2"
+            },
+            "file_lock_configuration": {
+                "default_retention": {
+                    "mode": "governance",
+                    "period": {
+                        "duration": 30,
+                        "unit": "days"
+                    }
+                },
+                "is_client_authorized_to_read": true,
+                "is_file_lock_enabled": true
+            },
+            "is_public": false,
+            "lifecycle_rules": {
+                "days_from_hiding_to_deleting": 7,
+                "file_name_prefix": ""
+            },
+            "lifecycle_rules_count": 1,
+            "options": "s3",
+            "replication_configuration": {
+                "as_replication_source": {
+                    "replication_rules": {
+                        "destination_bucket_id": "1a2b3c4d5e6f7a8b9c0d0003",
+                        "file_name_prefix": "",
+                        "include_existing_files": false,
+                        "is_enabled": true,
+                        "priority": 1,
+                        "replication_rule_name": "example-replication-rule"
+                    },
+                    "source_application_key_id": "0040a1b2c3d4e5f0000000009"
+                },
+                "is_client_authorized_to_read": true,
+                "is_replication_destination": false,
+                "is_replication_source": true
+            },
+            "revision": 3
+        }
+    },
+    "cloud": {
+        "account": {
+            "id": "0a1b2c3d4e5f"
+        },
+        "provider": "backblaze",
+        "service": {
+            "name": "b2"
+        }
+    },
+    "data_stream": {
+        "dataset": "backblaze_b2.bucket",
+        "namespace": "48680",
+        "type": "logs"
+    },
+    "ecs": {
+        "version": "9.3.0"
+    },
+    "elastic_agent": {
+        "id": "4169ce9b-b35d-451b-9979-bd41bed9198f",
+        "snapshot": false,
+        "version": "9.4.3"
+    },
+    "entity": {
+        "id": "1a2b3c4d5e6f7a8b9c0d0001",
+        "name": "example-backups",
+        "sub_type": "backblaze_b2_bucket",
+        "type": [
+            "bucket"
+        ]
+    },
+    "event": {
+        "agent_id_status": "verified",
+        "category": [
+            "configuration"
+        ],
+        "dataset": "backblaze_b2.bucket",
+        "ingested": "2026-09-15T04:25:14Z",
+        "kind": "asset",
+        "module": "backblaze_b2",
+        "original": "{\"accountId\":\"0a1b2c3d4e5f\",\"bucketId\":\"1a2b3c4d5e6f7a8b9c0d0001\",\"bucketInfo\":{\"environment\":\"production\"},\"bucketName\":\"example-backups\",\"bucketType\":\"allPrivate\",\"corsRules\":[],\"defaultServerSideEncryption\":{\"isClientAuthorizedToRead\":true,\"value\":{\"algorithm\":\"AES256\",\"mode\":\"SSE-B2\"}},\"fileLockConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"defaultRetention\":{\"mode\":\"governance\",\"period\":{\"duration\":30,\"unit\":\"days\"}},\"isFileLockEnabled\":true}},\"lifecycleRules\":[{\"daysFromHidingToDeleting\":7,\"daysFromUploadingToHiding\":null,\"fileNamePrefix\":\"\"}],\"options\":[\"s3\"],\"replicationConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"asReplicationDestination\":null,\"asReplicationSource\":{\"replicationRules\":[{\"destinationBucketId\":\"1a2b3c4d5e6f7a8b9c0d0003\",\"fileNamePrefix\":\"\",\"includeExistingFiles\":false,\"isEnabled\":true,\"priority\":1,\"replicationRuleName\":\"example-replication-rule\"}],\"sourceApplicationKeyId\":\"0040a1b2c3d4e5f0000000009\"}}},\"revision\":3}",
+        "type": [
+            "info"
+        ]
+    },
+    "input": {
+        "type": "cel"
+    },
+    "tags": [
+        "preserve_original_event",
+        "forwarded",
+        "backblaze_b2-bucket"
+    ]
+}

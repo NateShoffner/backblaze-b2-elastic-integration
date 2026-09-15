@@ -1,0 +1,73 @@
+format_version: "3.4.2"
+name: backblaze_b2
+title: Backblaze B2
+version: "0.1.0"
+source:
+  license: "Elastic-2.0"
+description: Collect bucket access logs, daily usage reports, and bucket inventory from Backblaze B2 Cloud Storage with Elastic Agent.
+type: integration
+categories:
+  - cloud
+  - observability
+conditions:
+  kibana:
+    version: "^8.19.0 || ^9.1.0"
+  elastic:
+    subscription: "basic"
+icons:
+  - src: /img/sample-logo.svg
+    title: Sample logo
+    size: 32x32
+    type: image/svg+xml
+policy_templates:
+  - name: backblaze_b2
+    title: Backblaze B2
+    description: Collect access logs, usage reports, and bucket inventory from Backblaze B2.
+    inputs:
+      - type: aws-s3
+        title: Collect Backblaze B2 access logs and usage reports
+        description: Read bucket access logs and daily usage report CSVs stored in B2 buckets using the S3-compatible API.
+        vars:
+          - name: application_key_id
+            type: text
+            title: Application Key ID
+            description: >-
+              ID of a B2 application key that can list and read files in the log destination and usage reports buckets. Restrict the key to those buckets so it can't read other bucket contents.
+            required: true
+            show_user: true
+          - name: application_key
+            type: password
+            title: Application Key
+            description: >-
+              B2 application key for the log destination and usage reports buckets. The master application key can't be used with the S3-compatible API.
+            required: true
+            show_user: true
+            secret: true
+          - name: region
+            type: text
+            title: Region
+            description: >-
+              B2 region of the buckets, as shown in the bucket's S3 endpoint. For example, `us-west-004` for `s3.us-west-004.backblazeb2.com`.
+            required: true
+            show_user: true
+      - type: cel
+        title: Collect Backblaze B2 bucket inventory
+        description: Poll the B2 Native API for bucket configuration.
+        vars:
+          - name: application_key_id
+            type: text
+            title: Application Key ID
+            description: >-
+              ID of a B2 application key with no bucket restriction and the `listBuckets`, `readBucketEncryption`, `readBucketRetentions`, and `readBucketReplications` capabilities. Without the read capabilities, encryption, Object Lock, and replication settings are reported as not readable. The key doesn't need file read access.
+            required: true
+            show_user: true
+          - name: application_key
+            type: password
+            title: Application Key
+            description: B2 application key used to poll bucket inventory.
+            required: true
+            show_user: true
+            secret: true
+owner:
+  github: NateShoffner
+  type: community

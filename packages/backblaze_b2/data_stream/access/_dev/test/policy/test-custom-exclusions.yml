@@ -1,0 +1,17 @@
+input: aws-s3
+vars:
+  application_key_id: "0040000000000000000000001"
+  application_key: "K004exampleexampleexampleexample"
+  region: us-west-004
+data_stream:
+  vars:
+    bucket_name: example-access-logs
+    bucket_list_prefix: access-logs/
+    exclude_operations:
+      - B2_API.B2_LIST_FILE_NAMES
+      - REST.GET.BUCKET
+    processors: |
+      - add_fields:
+          target: ''
+          fields:
+            environment: test

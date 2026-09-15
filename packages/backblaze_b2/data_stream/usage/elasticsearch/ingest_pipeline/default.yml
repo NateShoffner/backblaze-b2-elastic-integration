@@ -1,0 +1,318 @@
+---
+description: Pipeline for parsing Backblaze B2 daily usage report CSV rows.
+processors:
+  - set:
+      tag: set_ecs_version
+      field: ecs.version
+      value: '9.3.0'
+  - rename:
+      tag: rename_message_to_event_original
+      field: message
+      target_field: event.original
+      ignore_missing: true
+      description: Renames the original `message` field to `event.original` to store a copy of the original message. The `event.original` field is not touched if the document already has one; it may happen when Logstash sends the document.
+      if: ctx.event?.original == null
+  - remove:
+      tag: remove_message
+      field: message
+      ignore_missing: true
+      description: The `message` field is no longer required if the document has an `event.original` field.
+      if: ctx.event?.original != null
+
+  # The aws-s3 input reads every object in the b2-reports-<accountId> bucket.
+  # Only usage files are indexed. Audit files repeat a subset of the usage file
+  # columns, and the reporting locations and groups files of group and
+  # organization reports only list other report files.
+  - drop:
+      tag: drop_non_usage_report_files
+      description: Drops lines read from audit, reporting locations, and groups report files, identified by the object key.
+      if: >-
+        ctx.aws?.s3?.object?.key instanceof String &&
+        (ctx.aws.s3.object.key.contains('usage.audit-') ||
+        ctx.aws.s3.object.key.endsWith('.reportingLocations.csv') ||
+        ctx.aws.s3.object.key.endsWith('usage.groups.csv'))
+  - drop:
+      tag: drop_header_rows_and_blank_lines
+      description: Drops the header row of usage and audit files (the audit header also covers events without an object key) and blank lines.
+      if: >-
+        ctx.event?.original instanceof String &&
+        (ctx.event.original.startsWith('line_version,') ||
+        ctx.event.original.startsWith('bucket_id,date,') ||
+        ctx.event.original.trim().isEmpty())
+
+  # The csv processor maps columns by position. Backblaze warns that columns
+  # may be added and says line_version is usually incremented when the number
+  # of columns changes. A row is only parsed when its line_version is supported
+  # and it has the matching number of columns. Any other row fails with a
+  # pipeline_error document that keeps event.original, instead of having its
+  # values silently mapped to the wrong fields. Column counting is done here
+  # because the csv processor ignores extra columns and trailing empty columns.
+  # To support a new format, add its line_version and column count to the
+  # params and a csv processor for its columns.
+  - script:
+      tag: script_validate_usage_row_format
+      lang: painless
+      description: Checks that the row has a supported line_version in the first column and the matching number of columns, counting commas outside double quotes.
+      if: ctx.event?.original instanceof String
+      params:
+        expected_columns:
+          '3': 22
+      source: |-
+        String line = ctx.event.original;
+        int columns = 1;
+        int firstSeparator = -1;
+        boolean quoted = false;
+        for (int i = 0; i < line.length(); i++) {
+          char c = line.charAt(i);
+          if (c == (char) '"') {
+            quoted = !quoted;
+          } else if (c == (char) ',' && !quoted) {
+            if (firstSeparator == -1) {
+              firstSeparator = i;
+            }
+            columns++;
+          }
+        }
+        String version = firstSeparator == -1 ? line : line.substring(0, firstSeparator);
+        def expected = params.expected_columns[version];
+        if (expected == null) {
+          throw new IllegalArgumentException('unsupported usage report line_version [' + version + '], supported values are ' + params.expected_columns.keySet());
+        }
+        if (columns != expected) {
+          throw new IllegalArgumentException('usage report row with line_version [' + version + '] has ' + columns + ' columns, expected ' + expected);
+        }
+
+  # Column order of line_version 3, as found in the report files (it differs
+  # from the order in the Backblaze documentation). Empty columns are skipped
+  # and don't create fields.
+  - csv:
+      tag: csv_usage_row
+      field: event.original
+      target_fields:
+        - backblaze_b2.usage.line_version
+        - _tmp.usage.date
+        - backblaze_b2.usage.group_id
+        - backblaze_b2.usage.reporting_location
+        - cloud.account.id
+        - _tmp.usage.account_email
+        - entity.id
+        - entity.name
+        - _tmp.usage.uploaded_gb
+        - _tmp.usage.deleted_gb
+        - _tmp.usage.downloaded_gb
+        - _tmp.usage.downloaded_bytes
+        - _tmp.usage.downloaded_favored_bytes
+        - _tmp.usage.stored_gb
+        - _tmp.usage.storage_byte_hours
+        - _tmp.usage.api_txn_class_a
+        - _tmp.usage.api_txn_class_b
+        - _tmp.usage.api_txn_class_c
+        - _tmp.usage.api_txn_class_d
+        - backblaze_b2.usage.resource_name
+        - backblaze_b2.usage.resource_group_name
+        - backblaze_b2.usage.resource_group_id
+      trim: true
+
+  # Date normalization. Report dates are UTC calendar days.
+  - date:
+      tag: date_usage_date
+      field: _tmp.usage.date
+      target_field: '@timestamp'
+      formats:
+        - yyyy-MM-dd
+      timezone: UTC
+      description: Sets the timestamp to the start of the UTC day the usage row covers.
+
+  # Type conversions. Numbers are converted from the temporary fields so a
+  # value that can't be converted never reaches a numeric field.
+  - convert:
+      tag: convert_uploaded_gb
+      field: _tmp.usage.uploaded_gb
+      target_field: backblaze_b2.usage.uploaded_gb
+      type: double
+      ignore_missing: true
+  - convert:
+      tag: convert_deleted_gb
+      field: _tmp.usage.deleted_gb
+      target_field: backblaze_b2.usage.deleted_gb
+      type: double
+      ignore_missing: true
+  - convert:
+      tag: convert_downloaded_gb
+      field: _tmp.usage.downloaded_gb
+      target_field: backblaze_b2.usage.downloaded_gb
+      type: double
+      ignore_missing: true
+  - convert:
+      tag: convert_downloaded_bytes
+      field: _tmp.usage.downloaded_bytes
+      target_field: backblaze_b2.usage.downloaded_bytes
+      type: long
+      ignore_missing: true
+  - convert:
+      tag: convert_downloaded_favored_bytes
+      field: _tmp.usage.downloaded_favored_bytes
+      target_field: backblaze_b2.usage.downloaded_favored_bytes
+      type: long
+      ignore_missing: true
+  - convert:
+      tag: convert_stored_gb
+      field: _tmp.usage.stored_gb
+      target_field: backblaze_b2.usage.stored_gb
+      type: double
+      ignore_missing: true
+  - convert:
+      tag: convert_storage_byte_hours
+      field: _tmp.usage.storage_byte_hours
+      target_field: backblaze_b2.usage.storage_byte_hours
+      type: long
+      ignore_missing: true
+  - convert:
+      tag: convert_api_txn_class_a
+      field: _tmp.usage.api_txn_class_a
+      target_field: backblaze_b2.usage.api_txn_class_a
+      type: long
+      ignore_missing: true
+  - convert:
+      tag: convert_api_txn_class_b
+      field: _tmp.usage.api_txn_class_b
+      target_field: backblaze_b2.usage.api_txn_class_b
+      type: long
+      ignore_missing: true
+  - convert:
+      tag: convert_api_txn_class_c
+      field: _tmp.usage.api_txn_class_c
+      target_field: backblaze_b2.usage.api_txn_class_c
+      type: long
+      ignore_missing: true
+  - convert:
+      tag: convert_api_txn_class_d
+      field: _tmp.usage.api_txn_class_d
+      target_field: backblaze_b2.usage.api_txn_class_d
+      type: long
+      ignore_missing: true
+
+  # Derived metrics
+  - script:
+      tag: script_derived_usage_metrics
+      lang: painless
+      description: Adds the total number of API transactions across all classes and the average number of bytes stored during the day (storage byte hours divided by 24).
+      if: ctx.backblaze_b2?.usage instanceof Map
+      params:
+        api_txn_fields:
+          - api_txn_class_a
+          - api_txn_class_b
+          - api_txn_class_c
+          - api_txn_class_d
+        hours_per_day: 24
+      source: |-
+        def usage = ctx.backblaze_b2.usage;
+        long total = 0;
+        boolean found = false;
+        for (def name : params.api_txn_fields) {
+          def value = usage[name];
+          if (value != null) {
+            total += value;
+            found = true;
+          }
+        }
+        if (found) {
+          usage.api_txn_total = total;
+        }
+        if (usage.storage_byte_hours != null) {
+          usage.average_stored_bytes = usage.storage_byte_hours / params.hours_per_day;
+        }
+
+  # Row scope and entity. Bucket rows describe the bucket in entity.*, like the
+  # bucket data stream. The account-level row has no bucket ID and carries API
+  # transactions that Backblaze attributes to the account rather than a bucket.
+  - set:
+      tag: set_scope_bucket
+      field: backblaze_b2.usage.scope
+      value: bucket
+      if: ctx.entity?.id != null
+  - set:
+      tag: set_scope_account
+      field: backblaze_b2.usage.scope
+      value: account
+      if: ctx.entity?.id == null
+  - append:
+      tag: append_entity_type_bucket
+      field: entity.type
+      value: bucket
+      allow_duplicates: false
+      if: ctx.entity?.id != null
+  - set:
+      tag: set_entity_sub_type
+      field: entity.sub_type
+      value: backblaze_b2_bucket
+      if: ctx.entity?.id != null
+
+  # Cloud context
+  - set:
+      tag: set_cloud_provider
+      field: cloud.provider
+      value: backblaze
+  - set:
+      tag: set_cloud_service_name
+      field: cloud.service.name
+      value: b2
+
+  # ECS categorization. Each row is a set of daily usage measurements. No
+  # event.category value describes storage usage, so none is set.
+  - set:
+      tag: set_event_kind_metric
+      field: event.kind
+      value: metric
+
+  # Backblaze restores missing report files for the past seven days, and the
+  # aws-s3 input reads an object again when it is rewritten. The document ID
+  # identifies one usage row (day, account, location, and bucket, or the
+  # account-level scope) so a row that is read again is rejected as a
+  # duplicate instead of being indexed twice. This only applies within one
+  # backing index of the data stream.
+  - fingerprint:
+      tag: fingerprint_document_id
+      fields:
+        - '@timestamp'
+        - cloud.account.id
+        - backblaze_b2.usage.reporting_location
+        - backblaze_b2.usage.scope
+        - entity.id
+      target_field: _id
+      method: SHA-256
+      ignore_missing: true
+
+  # Cleanup. The account email is personal data and is not indexed; the
+  # account is identified by cloud.account.id.
+  - remove:
+      tag: remove_tmp
+      field: _tmp
+      ignore_missing: true
+  - append:
+      tag: append_preserve_original_event_on_error
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false
+      if: ctx.error?.message != null
+on_failure:
+  - append:
+      tag: append_error_message
+      field: error.message
+      value: >-
+        Processor '{{{ _ingest.on_failure_processor_type }}}'
+        {{{#_ingest.on_failure_processor_tag}}}with tag '{{{ _ingest.on_failure_processor_tag }}}'
+        {{{/_ingest.on_failure_processor_tag}}}failed with message '{{{ _ingest.on_failure_message }}}'
+  - set:
+      tag: set_pipeline_error_to_event_kind
+      field: event.kind
+      value: pipeline_error
+  - remove:
+      tag: remove_tmp_on_failure
+      field: _tmp
+      ignore_missing: true
+  - append:
+      tag: append_preserve_original_event
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false

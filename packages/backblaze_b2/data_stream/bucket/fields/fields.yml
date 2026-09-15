@@ -1,0 +1,104 @@
+- name: backblaze_b2.bucket
+  type: group
+  description: Configuration of a Backblaze B2 bucket as returned by `b2_list_buckets`. The bucket ID and name are stored in `entity.id` and `entity.name`, and the account ID in `cloud.account.id`.
+  fields:
+    - name: bucket_type
+      type: keyword
+      description: Bucket type, one of `allPublic`, `allPrivate`, `restricted`, `snapshot`, or `shared`.
+    - name: is_public
+      type: boolean
+      description: Whether the bucket type is `allPublic`, which lets anyone download its files without authorization.
+    - name: bucket_info
+      type: flattened
+      description: User-defined key/value metadata stored with the bucket.
+    - name: options
+      type: keyword
+      description: Bucket options. `s3` means the bucket is accessible through the S3 compatible API.
+    - name: revision
+      type: long
+      description: Bucket revision number, incremented every time the bucket settings change.
+    - name: cors_rules
+      type: flattened
+      description: CORS rules configured for the bucket, one object per rule with snake_case keys, for example `cors_rule_name`, `allowed_origins`, `allowed_operations`, `allowed_headers`, `expose_headers`, and `max_age_seconds`.
+    - name: cors_rules_count
+      type: long
+      description: Number of CORS rules configured for the bucket.
+    - name: lifecycle_rules
+      type: flattened
+      description: Lifecycle rules configured for the bucket, one object per rule with snake_case keys, for example `file_name_prefix`, `days_from_uploading_to_hiding`, and `days_from_hiding_to_deleting`.
+    - name: lifecycle_rules_count
+      type: long
+      description: Number of lifecycle rules configured for the bucket.
+    - name: default_server_side_encryption
+      type: group
+      description: Default server-side encryption settings for new files in the bucket.
+      fields:
+        - name: is_client_authorized_to_read
+          type: boolean
+          description: Whether the application key can read the default encryption settings. When false, the other encryption fields are not set.
+        - name: is_enabled
+          type: boolean
+          description: Whether default server-side encryption is enabled. Only set when the application key can read the encryption settings.
+        - name: mode
+          type: keyword
+          description: Default encryption mode, for example `SSE-B2`.
+        - name: algorithm
+          type: keyword
+          description: Default encryption algorithm, for example `AES256`.
+    - name: file_lock_configuration
+      type: group
+      description: Object Lock (file lock) settings for the bucket.
+      fields:
+        - name: is_client_authorized_to_read
+          type: boolean
+          description: Whether the application key can read the Object Lock settings. When false, the other Object Lock fields are not set.
+        - name: is_file_lock_enabled
+          type: boolean
+          description: Whether Object Lock is enabled on the bucket.
+        - name: default_retention
+          type: group
+          description: Default retention applied to new files in the bucket.
+          fields:
+            - name: mode
+              type: keyword
+              description: Default retention mode, `governance` or `compliance`. Not set when the bucket has no default retention.
+            - name: period
+              type: group
+              description: Default retention period.
+              fields:
+                - name: duration
+                  type: long
+                  description: Length of the default retention period, in `unit` units.
+                - name: unit
+                  type: keyword
+                  description: Unit of the default retention period, `days` or `years`.
+    - name: replication_configuration
+      type: group
+      description: Cloud Replication settings for the bucket.
+      fields:
+        - name: is_client_authorized_to_read
+          type: boolean
+          description: Whether the application key can read the replication settings. When false, the other replication fields are not set.
+        - name: is_replication_source
+          type: boolean
+          description: Whether the bucket has a replication source configuration, meaning it replicates files to other buckets. Only set when the application key can read the replication settings.
+        - name: is_replication_destination
+          type: boolean
+          description: Whether the bucket has a replication destination configuration, meaning it receives replicated files. Only set when the application key can read the replication settings.
+        - name: as_replication_source
+          type: group
+          description: Replication settings where this bucket is the source.
+          fields:
+            - name: source_application_key_id
+              type: keyword
+              description: ID of the application key used to read files from this source bucket.
+            - name: replication_rules
+              type: flattened
+              description: Replication rules, one object per rule with snake_case keys, for example `replication_rule_name`, `destination_bucket_id`, `file_name_prefix`, `include_existing_files`, `is_enabled`, and `priority`.
+        - name: as_replication_destination
+          type: group
+          description: Replication settings where this bucket is the destination.
+          fields:
+            - name: source_to_destination_key_mapping
+              type: flattened
+              description: Mapping of source application key IDs to destination application key IDs.

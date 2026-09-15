@@ -1,0 +1,289 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-03-05T14:02:11.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "host_header": "api001.backblazeb2.com",
+                    "key": "documents/readme.txt",
+                    "object_size": 596,
+                    "requester": "identity:account:0123456789ab",
+                    "requester_type": "account",
+                    "turn_around_time": 21,
+                    "version_id": "4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1e6a8c0d2f4b5a70_d20260301_m041018_c001_v0001033_t0035_u01772338218521"
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "B2_API.B2_GET_FILE_INFO",
+                "category": [
+                    "web"
+                ],
+                "duration": 22000000,
+                "kind": "event",
+                "original": "0123456789ab example-backups [05/Mar/2026:14:02:11 +0000] 198.51.100.23 identity:account:0123456789ab 2b9f5d1a7e3c0648 B2_API.B2_GET_FILE_INFO documents/readme.txt \"POST /b2api/v3/b2_get_file_info HTTP/1.1\" 200 - 694 596 22 21 \"-\" \"b2/4.0.1 python/3.12.2\" 4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1e6a8c0d2f4b5a70_d20260301_m041018_c001_v0001033_t0035_u01772338218521 - - TLS_AES_128_GCM_SHA256 AuthHeader api001.backblazeb2.com TLSv1.3 - -",
+                "outcome": "success",
+                "type": [
+                    "access"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "2b9f5d1a7e3c0648",
+                    "method": "POST"
+                },
+                "response": {
+                    "body": {
+                        "bytes": 694
+                    },
+                    "status_code": 200
+                },
+                "version": "1.1"
+            },
+            "related": {
+                "ip": [
+                    "198.51.100.23"
+                ],
+                "user": [
+                    "0123456789ab"
+                ]
+            },
+            "source": {
+                "as": {
+                    "number": 64501,
+                    "organization": {
+                        "name": "Documentation ASN"
+                    }
+                },
+                "geo": {
+                    "city_name": "Amsterdam",
+                    "continent_name": "Europe",
+                    "country_iso_code": "NL",
+                    "country_name": "Netherlands",
+                    "location": {
+                        "lat": 52.37404,
+                        "lon": 4.88969
+                    },
+                    "region_iso_code": "NL-NH",
+                    "region_name": "North Holland"
+                },
+                "ip": "198.51.100.23"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "TLS_AES_128_GCM_SHA256",
+                "version": "1.3",
+                "version_protocol": "tls"
+            },
+            "url": {
+                "original": "/b2api/v3/b2_get_file_info",
+                "path": "/b2api/v3/b2_get_file_info"
+            },
+            "user": {
+                "id": "0123456789ab"
+            },
+            "user_agent": {
+                "device": {
+                    "name": "Other"
+                },
+                "name": "Other",
+                "original": "b2/4.0.1 python/3.12.2"
+            }
+        },
+        {
+            "@timestamp": "2026-03-05T14:05:37.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "host_header": "api001.backblazeb2.com",
+                    "key": "documents/old-draft.docx",
+                    "requester": "identity:orguser:alice.johnson",
+                    "requester_type": "orguser",
+                    "turn_around_time": 30,
+                    "version_id": "4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1b2d4f6a8c0e1d20_d20260305_m140537_c001_v0001077_t0012_u01772719537412"
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "B2_API.B2_HIDE_FILE",
+                "category": [
+                    "web",
+                    "file"
+                ],
+                "duration": 31000000,
+                "kind": "event",
+                "original": "0123456789ab example-backups [05/Mar/2026:14:05:37 +0000] 198.51.100.88 identity:orguser:alice.johnson 8f4c0a6e2d9b1753 B2_API.B2_HIDE_FILE documents/old-draft.docx \"POST /b2api/v3/b2_hide_file HTTP/1.1\" 200 - 512 - 31 30 \"https://secure.backblaze.com/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15\" 4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1b2d4f6a8c0e1d20_d20260305_m140537_c001_v0001077_t0012_u01772719537412 - - TLS_AES_128_GCM_SHA256 AuthHeader api001.backblazeb2.com TLSv1.3 - -",
+                "outcome": "success",
+                "type": [
+                    "access",
+                    "deletion"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "8f4c0a6e2d9b1753",
+                    "method": "POST",
+                    "referrer": "https://secure.backblaze.com/"
+                },
+                "response": {
+                    "body": {
+                        "bytes": 512
+                    },
+                    "status_code": 200
+                },
+                "version": "1.1"
+            },
+            "related": {
+                "ip": [
+                    "198.51.100.88"
+                ],
+                "user": [
+                    "alice.johnson"
+                ]
+            },
+            "source": {
+                "as": {
+                    "number": 64501,
+                    "organization": {
+                        "name": "Documentation ASN"
+                    }
+                },
+                "geo": {
+                    "city_name": "Amsterdam",
+                    "continent_name": "Europe",
+                    "country_iso_code": "NL",
+                    "country_name": "Netherlands",
+                    "location": {
+                        "lat": 52.37404,
+                        "lon": 4.88969
+                    },
+                    "region_iso_code": "NL-NH",
+                    "region_name": "North Holland"
+                },
+                "ip": "198.51.100.88"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "TLS_AES_128_GCM_SHA256",
+                "version": "1.3",
+                "version_protocol": "tls"
+            },
+            "url": {
+                "original": "/b2api/v3/b2_hide_file",
+                "path": "/b2api/v3/b2_hide_file"
+            },
+            "user": {
+                "name": "alice.johnson"
+            },
+            "user_agent": {
+                "device": {
+                    "name": "Mac"
+                },
+                "name": "Safari",
+                "original": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
+                "os": {
+                    "full": "Mac OS X 14.4",
+                    "name": "Mac OS X",
+                    "version": "14.4"
+                },
+                "version": "17.4"
+            }
+        },
+        {
+            "@timestamp": "2026-03-05T14:09:02.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "key": "documents/readme.txt",
+                    "object_size": 596,
+                    "requester": "identity:replication:0123456789ab",
+                    "requester_type": "replication",
+                    "turn_around_time": 49,
+                    "version_id": "4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1c3e5a7b9d1f2e30_d20260305_m140902_c001_v0001077_t0020_u01772719742088"
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "B2_API.B2_UPLOAD_FILE",
+                "category": [
+                    "web",
+                    "file"
+                ],
+                "duration": 57000000,
+                "kind": "event",
+                "original": "0123456789ab example-backups [05/Mar/2026:14:09:02 +0000] - identity:replication:0123456789ab 5e0a4c8f2b6d1937 B2_API.B2_UPLOAD_FILE documents/readme.txt \"POST /b2api/v3/b2_upload_file/5e6f7a8b9c0d1e2f3a4b5c6d/c001_v0001077_t0020 HTTP/1.1\" 200 - 802 596 57 49 \"-\" \"-\" 4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1c3e5a7b9d1f2e30_d20260305_m140902_c001_v0001077_t0020_u01772719742088 - - TLS_AES_256_GCM_SHA384 AuthHeader - TLSv1.3 - -",
+                "outcome": "success",
+                "type": [
+                    "access",
+                    "creation"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "5e0a4c8f2b6d1937",
+                    "method": "POST"
+                },
+                "response": {
+                    "body": {
+                        "bytes": 802
+                    },
+                    "status_code": 200
+                },
+                "version": "1.1"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "TLS_AES_256_GCM_SHA384",
+                "version": "1.3",
+                "version_protocol": "tls"
+            },
+            "url": {
+                "original": "/b2api/v3/b2_upload_file/5e6f7a8b9c0d1e2f3a4b5c6d/c001_v0001077_t0020",
+                "path": "/b2api/v3/b2_upload_file/5e6f7a8b9c0d1e2f3a4b5c6d/c001_v0001077_t0020"
+            }
+        }
+    ]
+}

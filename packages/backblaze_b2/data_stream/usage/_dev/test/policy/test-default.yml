@@ -1,0 +1,9 @@
+input: aws-s3
+vars:
+  application_key_id: "0040000000000000000000001"
+  application_key: "K004exampleexampleexampleexample"
+  region: us-west-004
+data_stream:
+  vars:
+    bucket_name: b2-reports-0123456789ab
+    bucket_list_prefix: "2026"

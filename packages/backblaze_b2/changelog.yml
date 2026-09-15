@@ -1,0 +1,6 @@
+# newer versions go on top
+- version: "0.1.0"
+  changes:
+    - description: Initial release with access, usage, and bucket data streams.
+      type: enhancement
+      link: https://github.com/NateShoffner/elastic-integration-backblaze/pull/1

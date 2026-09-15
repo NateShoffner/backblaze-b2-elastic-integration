@@ -1,0 +1,8 @@
+{
+    "events": [
+        {
+            "@timestamp": "2026-09-14T12:00:00.000Z",
+            "message": "{\"accountId\":\"0a1b2c3d4e5f\",\"bucketId\":\"1a2b3c4d5e6f7a8b9c0d0009\",\"bucketInfo\":{\"Cache-Control\":\"max-age=86400\",\"backup-tool\":\"example-backup-agent\",\"environment\":\"production\",\"owner\":\"alice.johnson\"},\"bucketName\":\"example-workstation-backups\",\"bucketType\":\"allPrivate\",\"corsRules\":[],\"defaultServerSideEncryption\":{\"isClientAuthorizedToRead\":true,\"value\":{\"algorithm\":\"AES256\",\"mode\":\"SSE-B2\"}},\"fileLockConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"defaultRetention\":{\"mode\":null,\"period\":null},\"isFileLockEnabled\":false}},\"lifecycleRules\":[{\"daysFromHidingToDeleting\":30,\"daysFromUploadingToHiding\":null,\"fileNamePrefix\":\"\"}],\"options\":[\"s3\"],\"replicationConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":null},\"revision\":9}"
+        }
+    ]
+}

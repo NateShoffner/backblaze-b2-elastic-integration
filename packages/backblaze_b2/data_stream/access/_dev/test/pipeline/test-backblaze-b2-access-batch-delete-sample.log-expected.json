@@ -1,0 +1,204 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-03-03T12:30:09.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "host_header": "s3.us-west-004.backblazeb2.com",
+                    "key": "logs/2025/app-01.log.gz",
+                    "object_size": 51234,
+                    "requester": "identity:applicationKey:0010123456789ab0000000002",
+                    "requester_type": "applicationKey",
+                    "signature_version": "SigV4",
+                    "turn_around_time": 12
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "BATCH.DELETE.OBJECT",
+                "category": [
+                    "web",
+                    "file"
+                ],
+                "duration": 96000000,
+                "kind": "event",
+                "original": "0123456789ab example-backups [03/Mar/2026:12:30:09 +0000] 192.0.2.44 identity:applicationKey:0010123456789ab0000000002 c5d0a3e7f19b2864 BATCH.DELETE.OBJECT logs/2025/app-01.log.gz \"POST /example-backups?delete HTTP/1.1\" 204 - - 51234 96 12 \"-\" \"aws-cli/2.15.30 Python/3.11.8 Linux/6.5.0 exe/x86_64.ubuntu.22 prompt/off command/s3.rm\" - - SigV4 TLS_AES_256_GCM_SHA384 AuthHeader s3.us-west-004.backblazeb2.com TLSv1.3 - -",
+                "outcome": "success",
+                "type": [
+                    "access",
+                    "deletion"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "c5d0a3e7f19b2864",
+                    "method": "POST"
+                },
+                "response": {
+                    "status_code": 204
+                },
+                "version": "1.1"
+            },
+            "related": {
+                "ip": [
+                    "192.0.2.44"
+                ],
+                "user": [
+                    "0010123456789ab0000000002"
+                ]
+            },
+            "source": {
+                "as": {
+                    "number": 64500,
+                    "organization": {
+                        "name": "Documentation ASN"
+                    }
+                },
+                "geo": {
+                    "city_name": "Las Vegas",
+                    "continent_name": "North America",
+                    "country_iso_code": "US",
+                    "country_name": "United States",
+                    "location": {
+                        "lat": 36.17497,
+                        "lon": -115.13722
+                    },
+                    "region_iso_code": "US-NV",
+                    "region_name": "Nevada"
+                },
+                "ip": "192.0.2.44"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "TLS_AES_256_GCM_SHA384",
+                "version": "1.3",
+                "version_protocol": "tls"
+            },
+            "url": {
+                "original": "/example-backups?delete",
+                "path": "/example-backups",
+                "query": "delete"
+            },
+            "user": {
+                "id": "0010123456789ab0000000002"
+            },
+            "user_agent": {
+                "device": {
+                    "name": "Other"
+                },
+                "name": "aws-cli",
+                "original": "aws-cli/2.15.30 Python/3.11.8 Linux/6.5.0 exe/x86_64.ubuntu.22 prompt/off command/s3.rm",
+                "os": {
+                    "full": "Linux 6.5.0",
+                    "name": "Linux",
+                    "version": "6.5.0"
+                },
+                "version": "2.15.30"
+            }
+        },
+        {
+            "@timestamp": "2026-03-03T12:30:09.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "host_header": "s3.us-west-004.backblazeb2.com",
+                    "key": "logs/2025/app-02.log.gz",
+                    "object_size": 48877,
+                    "requester": "identity:applicationKey:0010123456789ab0000000002",
+                    "requester_type": "applicationKey",
+                    "signature_version": "SigV4"
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "BATCH.DELETE.OBJECT",
+                "category": [
+                    "web",
+                    "file"
+                ],
+                "kind": "event",
+                "original": "0123456789ab example-backups [03/Mar/2026:12:30:09 +0000] 192.0.2.44 identity:applicationKey:0010123456789ab0000000002 c5d0a3e7f19b2865 BATCH.DELETE.OBJECT logs/2025/app-02.log.gz - 204 - - 48877 - - - - - - SigV4 TLS_AES_256_GCM_SHA384 AuthHeader s3.us-west-004.backblazeb2.com TLSv1.3 - -",
+                "outcome": "success",
+                "type": [
+                    "access",
+                    "deletion"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "c5d0a3e7f19b2865"
+                },
+                "response": {
+                    "status_code": 204
+                }
+            },
+            "related": {
+                "ip": [
+                    "192.0.2.44"
+                ],
+                "user": [
+                    "0010123456789ab0000000002"
+                ]
+            },
+            "source": {
+                "as": {
+                    "number": 64500,
+                    "organization": {
+                        "name": "Documentation ASN"
+                    }
+                },
+                "geo": {
+                    "city_name": "Las Vegas",
+                    "continent_name": "North America",
+                    "country_iso_code": "US",
+                    "country_name": "United States",
+                    "location": {
+                        "lat": 36.17497,
+                        "lon": -115.13722
+                    },
+                    "region_iso_code": "US-NV",
+                    "region_name": "Nevada"
+                },
+                "ip": "192.0.2.44"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "TLS_AES_256_GCM_SHA384",
+                "version": "1.3",
+                "version_protocol": "tls"
+            },
+            "user": {
+                "id": "0010123456789ab0000000002"
+            }
+        }
+    ]
+}

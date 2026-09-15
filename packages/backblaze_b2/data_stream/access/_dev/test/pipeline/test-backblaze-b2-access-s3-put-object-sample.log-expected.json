@@ -1,0 +1,226 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-03-03T08:15:02.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "host_header": "s3.us-west-004.backblazeb2.com",
+                    "key": "reports/2026/q1-summary.pdf",
+                    "object_size": 248731,
+                    "requester": "identity:applicationKey:0010123456789ab0000000002",
+                    "requester_type": "applicationKey",
+                    "signature_version": "SigV4",
+                    "turn_around_time": 58,
+                    "version_id": "4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1d7b9d1e3a5c6b80_d20260303_m081502_c004_v0402011_t0033_u01772525702118"
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "REST.PUT.OBJECT",
+                "category": [
+                    "web",
+                    "file"
+                ],
+                "duration": 342000000,
+                "kind": "event",
+                "original": "0123456789ab example-backups [03/Mar/2026:08:15:02 +0000] 192.0.2.44 identity:applicationKey:0010123456789ab0000000002 8e3b1d6f0a4c7259 REST.PUT.OBJECT reports/2026/q1-summary.pdf \"PUT /example-backups/reports/2026/q1-summary.pdf HTTP/1.1\" 200 - - 248731 342 58 \"-\" \"aws-cli/2.15.30 Python/3.11.8 Linux/6.5.0 exe/x86_64.ubuntu.22 prompt/off command/s3.cp\" 4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1d7b9d1e3a5c6b80_d20260303_m081502_c004_v0402011_t0033_u01772525702118 - SigV4 TLS_AES_256_GCM_SHA384 AuthHeader s3.us-west-004.backblazeb2.com TLSv1.3 - -",
+                "outcome": "success",
+                "type": [
+                    "access",
+                    "creation"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "8e3b1d6f0a4c7259",
+                    "method": "PUT"
+                },
+                "response": {
+                    "status_code": 200
+                },
+                "version": "1.1"
+            },
+            "related": {
+                "ip": [
+                    "192.0.2.44"
+                ],
+                "user": [
+                    "0010123456789ab0000000002"
+                ]
+            },
+            "source": {
+                "as": {
+                    "number": 64500,
+                    "organization": {
+                        "name": "Documentation ASN"
+                    }
+                },
+                "geo": {
+                    "city_name": "Las Vegas",
+                    "continent_name": "North America",
+                    "country_iso_code": "US",
+                    "country_name": "United States",
+                    "location": {
+                        "lat": 36.17497,
+                        "lon": -115.13722
+                    },
+                    "region_iso_code": "US-NV",
+                    "region_name": "Nevada"
+                },
+                "ip": "192.0.2.44"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "TLS_AES_256_GCM_SHA384",
+                "version": "1.3",
+                "version_protocol": "tls"
+            },
+            "url": {
+                "extension": "pdf",
+                "original": "/example-backups/reports/2026/q1-summary.pdf",
+                "path": "/example-backups/reports/2026/q1-summary.pdf"
+            },
+            "user": {
+                "id": "0010123456789ab0000000002"
+            },
+            "user_agent": {
+                "device": {
+                    "name": "Other"
+                },
+                "name": "aws-cli",
+                "original": "aws-cli/2.15.30 Python/3.11.8 Linux/6.5.0 exe/x86_64.ubuntu.22 prompt/off command/s3.cp",
+                "os": {
+                    "full": "Linux 6.5.0",
+                    "name": "Linux",
+                    "version": "6.5.0"
+                },
+                "version": "2.15.30"
+            }
+        },
+        {
+            "@timestamp": "2026-03-03T08:16:40.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "host_header": "example-backups.s3.us-west-004.backblazeb2.com",
+                    "key": "reports/2026/q1-data.csv",
+                    "object_size": 10240,
+                    "requester": "identity:applicationKey:0010123456789ab0000000002",
+                    "requester_type": "applicationKey",
+                    "signature_version": "SigV4",
+                    "turn_around_time": 31,
+                    "version_id": "4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1e8c0e2f4b6d7c90_d20260303_m081640_c004_v0402011_t0034_u01772525800204"
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "REST.PUT.OBJECT",
+                "category": [
+                    "web",
+                    "file"
+                ],
+                "duration": 97000000,
+                "kind": "event",
+                "original": "0123456789ab example-backups [03/Mar/2026:08:16:40 +0000] 2001:db8::25 identity:applicationKey:0010123456789ab0000000002 1c7e3a9f5b2d0846 REST.PUT.OBJECT reports/2026/q1-data.csv \"PUT /reports/2026/q1-data.csv HTTP/1.1\" 200 - - 10240 97 31 \"-\" \"Boto3/1.34.69 md/Botocore#1.34.69 ua/2.0 os/linux#6.5.0 lang/python#3.11.8\" 4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1e8c0e2f4b6d7c90_d20260303_m081640_c004_v0402011_t0034_u01772525800204 - SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader example-backups.s3.us-west-004.backblazeb2.com TLSv1.2 - -",
+                "outcome": "success",
+                "type": [
+                    "access",
+                    "creation"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "1c7e3a9f5b2d0846",
+                    "method": "PUT"
+                },
+                "response": {
+                    "status_code": 200
+                },
+                "version": "1.1"
+            },
+            "related": {
+                "ip": [
+                    "2001:db8::25"
+                ],
+                "user": [
+                    "0010123456789ab0000000002"
+                ]
+            },
+            "source": {
+                "as": {
+                    "number": 65551,
+                    "organization": {
+                        "name": "Documentation ASN"
+                    }
+                },
+                "geo": {
+                    "city_name": "Greenwich",
+                    "continent_name": "Europe",
+                    "country_iso_code": "GB",
+                    "country_name": "United Kingdom",
+                    "location": {
+                        "lat": 51.47687,
+                        "lon": -4.1E-4
+                    },
+                    "region_iso_code": "GB-ENG",
+                    "region_name": "England"
+                },
+                "ip": "2001:db8::25"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "ECDHE-RSA-AES128-GCM-SHA256",
+                "version": "1.2",
+                "version_protocol": "tls"
+            },
+            "url": {
+                "extension": "csv",
+                "original": "/reports/2026/q1-data.csv",
+                "path": "/reports/2026/q1-data.csv"
+            },
+            "user": {
+                "id": "0010123456789ab0000000002"
+            },
+            "user_agent": {
+                "device": {
+                    "name": "Spider"
+                },
+                "name": "Boto3",
+                "original": "Boto3/1.34.69 md/Botocore#1.34.69 ua/2.0 os/linux#6.5.0 lang/python#3.11.8",
+                "os": {
+                    "name": "Linux"
+                },
+                "version": "1.34.69"
+            }
+        }
+    ]
+}

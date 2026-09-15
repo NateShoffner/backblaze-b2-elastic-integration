@@ -1,0 +1,54 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-03-04T01:12:44.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "bucket": "example-backups",
+                    "key": "logs/2025/app-03.log.gz",
+                    "object_size": 20481,
+                    "requester": "identity:system",
+                    "requester_type": "system",
+                    "version_id": "4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1a8c2e4f6b8d0a10_d20251201_m101500_c004_v0402019_t0021_u01764584100000"
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "action": "B2_LIFECYCLE.HIDE.OBJECT",
+                "category": [
+                    "web",
+                    "file"
+                ],
+                "kind": "event",
+                "original": "0123456789ab example-backups [04/Mar/2026:01:12:44 +0000] - identity:system 6a2c8e0f4d1b3957 B2_LIFECYCLE.HIDE.OBJECT logs/2025/app-03.log.gz \"-\" 200 - - 20481 - - \"-\" \"-\" 4_z5e6f7a8b9c0d1e2f3a4b5c6d_f1a8c2e4f6b8d0a10_d20251201_m101500_c004_v0402019_t0021_u01764584100000 - - - - - - - -",
+                "outcome": "success",
+                "type": [
+                    "access",
+                    "deletion"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "6a2c8e0f4d1b3957"
+                },
+                "response": {
+                    "status_code": 200
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        }
+    ]
+}

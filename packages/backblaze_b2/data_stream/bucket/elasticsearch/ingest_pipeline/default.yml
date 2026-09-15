@@ -1,0 +1,346 @@
+---
+description: Pipeline for processing Backblaze B2 bucket inventory snapshots from b2_list_buckets.
+processors:
+  - set:
+      tag: set_ecs_version
+      field: ecs.version
+      value: '9.3.0'
+  - remove:
+      tag: remove_agentless_tags
+      field:
+        - organization
+        - division
+        - team
+      ignore_missing: true
+      if: ctx.organization instanceof String && ctx.division instanceof String && ctx.team instanceof String
+      description: >-
+        Removes the fields added by Agentless as metadata,
+        as they can collide with ECS fields.
+  - set:
+      tag: set_event_kind_data_collection_error
+      field: event.kind
+      value: pipeline_error
+      if: ctx.error?.message != null && ctx.message == null && ctx.event?.original == null
+      description: Marks documents that only carry a CEL data collection error, for example a failed B2 API call.
+  - terminate:
+      tag: data_collection_error
+      if: ctx.error?.message != null && ctx.message == null && ctx.event?.original == null
+      description: error message set and no data to process.
+  - rename:
+      tag: rename_message_to_event_original
+      field: message
+      target_field: event.original
+      ignore_missing: true
+      description: Renames the original `message` field to `event.original` to store a copy of the original message. The `event.original` field is not touched if the document already has one; it may happen when Logstash sends the document.
+      if: ctx.event?.original == null
+  - remove:
+      tag: remove_message
+      field: message
+      ignore_missing: true
+      description: The `message` field is no longer required if the document has an `event.original` field.
+      if: ctx.event?.original != null
+  - json:
+      tag: json_event_original
+      field: event.original
+      target_field: json
+      if: ctx.event?.original != null
+
+  # Cloud context
+  - set:
+      tag: set_cloud_provider
+      field: cloud.provider
+      value: backblaze
+  - set:
+      tag: set_cloud_service_name
+      field: cloud.service.name
+      value: b2
+  - rename:
+      tag: rename_json_account_id
+      field: json.accountId
+      target_field: cloud.account.id
+      if: ctx.json?.accountId != null
+
+  # Entity (the bucket this inventory record describes)
+  - rename:
+      tag: rename_json_bucket_id
+      field: json.bucketId
+      target_field: entity.id
+      if: ctx.json?.bucketId != null
+  - rename:
+      tag: rename_json_bucket_name
+      field: json.bucketName
+      target_field: entity.name
+      if: ctx.json?.bucketName != null
+  - append:
+      tag: append_entity_type
+      field: entity.type
+      value: bucket
+      allow_duplicates: false
+  - set:
+      tag: set_entity_sub_type
+      field: entity.sub_type
+      value: backblaze_b2_bucket
+
+  # Bucket settings
+  - rename:
+      tag: rename_json_bucket_type
+      field: json.bucketType
+      target_field: backblaze_b2.bucket.bucket_type
+      if: ctx.json?.bucketType != null
+  - set:
+      tag: set_is_public_true
+      field: backblaze_b2.bucket.is_public
+      value: true
+      description: Only `allPublic` buckets allow unauthenticated downloads.
+      if: ctx.backblaze_b2?.bucket?.bucket_type == 'allPublic'
+  - set:
+      tag: set_is_public_false
+      field: backblaze_b2.bucket.is_public
+      value: false
+      if: ctx.backblaze_b2?.bucket?.bucket_type != null && ctx.backblaze_b2.bucket.bucket_type != 'allPublic'
+  - rename:
+      tag: rename_json_bucket_info
+      field: json.bucketInfo
+      target_field: backblaze_b2.bucket.bucket_info
+      if: ctx.json?.bucketInfo instanceof Map && !ctx.json.bucketInfo.isEmpty()
+  - rename:
+      tag: rename_json_options
+      field: json.options
+      target_field: backblaze_b2.bucket.options
+      if: (ctx.json?.options instanceof List && !ctx.json.options.isEmpty()) || ctx.json?.options instanceof String
+  - rename:
+      tag: rename_json_revision
+      field: json.revision
+      target_field: backblaze_b2.bucket.revision
+      if: ctx.json?.revision != null
+
+  # Lifecycle, CORS, and replication rules are arrays of objects. The data
+  # stream uses `subobjects: false`, which rules out `nested`, so they are
+  # stored as `flattened` fields with snake_case keys.
+  - script:
+      tag: script_normalize_rules
+      lang: painless
+      description: >-
+        Converts lifecycle, CORS, and replication rules to arrays of objects
+        with snake_case keys and without null values, treating a single rule
+        object as an array of one rule, and counts lifecycle and CORS rules.
+      if: ctx.json instanceof Map
+      source: |-
+        String toSnakeCase(String key) {
+          StringBuilder sb = new StringBuilder();
+          for (int i = 0; i < key.length(); i++) {
+            String c = key.substring(i, i + 1);
+            String lower = c.toLowerCase();
+            if (i > 0 && !c.equals(lower)) {
+              sb.append('_');
+            }
+            sb.append(lower);
+          }
+          return sb.toString();
+        }
+        def normalize(def value) {
+          if (value instanceof Map) {
+            Map out = new LinkedHashMap();
+            for (def entry : value.entrySet()) {
+              if (entry.getValue() != null) {
+                out.put(toSnakeCase(entry.getKey().toString()), normalize(entry.getValue()));
+              }
+            }
+            return out;
+          }
+          if (value instanceof List) {
+            List out = new ArrayList();
+            for (def item : value) {
+              if (item != null) {
+                out.add(normalize(item));
+              }
+            }
+            return out;
+          }
+          return value;
+        }
+        List toRules(def value) {
+          if (value instanceof List) {
+            return normalize(value);
+          }
+          List rules = new ArrayList();
+          if (value instanceof Map && !value.isEmpty()) {
+            rules.add(normalize(value));
+          }
+          return rules;
+        }
+        ctx.backblaze_b2 = ctx.backblaze_b2 ?: [:];
+        ctx.backblaze_b2.bucket = ctx.backblaze_b2.bucket ?: [:];
+        def bucket = ctx.backblaze_b2.bucket;
+        def json = ctx.json;
+        if (json.lifecycleRules != null) {
+          List rules = toRules(json.lifecycleRules);
+          bucket.lifecycle_rules_count = rules.size();
+          json.lifecycleRules = rules;
+        }
+        if (json.corsRules != null) {
+          List rules = toRules(json.corsRules);
+          bucket.cors_rules_count = rules.size();
+          json.corsRules = rules;
+        }
+        def replication = json.replicationConfiguration;
+        if (replication instanceof Map && replication.isClientAuthorizedToRead != false && replication.value instanceof Map) {
+          def source = replication.value.asReplicationSource;
+          if (source instanceof Map && source.replicationRules != null) {
+            source.replicationRules = toRules(source.replicationRules);
+          }
+        }
+  - rename:
+      tag: rename_json_lifecycle_rules
+      field: json.lifecycleRules
+      target_field: backblaze_b2.bucket.lifecycle_rules
+      if: ctx.json?.lifecycleRules instanceof List && !ctx.json.lifecycleRules.isEmpty()
+  - rename:
+      tag: rename_json_cors_rules
+      field: json.corsRules
+      target_field: backblaze_b2.bucket.cors_rules
+      if: ctx.json?.corsRules instanceof List && !ctx.json.corsRules.isEmpty()
+
+  # Default server-side encryption. The settings are wrapped as
+  # {"isClientAuthorizedToRead": bool, "value": {...}}. When the application
+  # key can't read them, value is null and no settings are derived.
+  - set:
+      tag: set_default_server_side_encryption_is_enabled_true
+      field: backblaze_b2.bucket.default_server_side_encryption.is_enabled
+      value: true
+      if: ctx.json?.defaultServerSideEncryption?.isClientAuthorizedToRead == true && ctx.json.defaultServerSideEncryption.value?.mode != null && ctx.json.defaultServerSideEncryption.value.mode != 'none'
+  - set:
+      tag: set_default_server_side_encryption_is_enabled_false
+      field: backblaze_b2.bucket.default_server_side_encryption.is_enabled
+      value: false
+      if: ctx.json?.defaultServerSideEncryption?.isClientAuthorizedToRead == true && (ctx.json.defaultServerSideEncryption.value?.mode == null || ctx.json.defaultServerSideEncryption.value.mode == 'none')
+  - rename:
+      tag: rename_json_default_server_side_encryption_mode
+      field: json.defaultServerSideEncryption.value.mode
+      target_field: backblaze_b2.bucket.default_server_side_encryption.mode
+      if: ctx.json?.defaultServerSideEncryption?.value?.mode != null && ctx.json.defaultServerSideEncryption.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_default_server_side_encryption_algorithm
+      field: json.defaultServerSideEncryption.value.algorithm
+      target_field: backblaze_b2.bucket.default_server_side_encryption.algorithm
+      if: ctx.json?.defaultServerSideEncryption?.value?.algorithm != null && ctx.json.defaultServerSideEncryption.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_default_server_side_encryption_is_client_authorized_to_read
+      field: json.defaultServerSideEncryption.isClientAuthorizedToRead
+      target_field: backblaze_b2.bucket.default_server_side_encryption.is_client_authorized_to_read
+      if: ctx.json?.defaultServerSideEncryption?.isClientAuthorizedToRead instanceof Boolean
+
+  # Object Lock (file lock) configuration.
+  - rename:
+      tag: rename_json_file_lock_configuration_is_file_lock_enabled
+      field: json.fileLockConfiguration.value.isFileLockEnabled
+      target_field: backblaze_b2.bucket.file_lock_configuration.is_file_lock_enabled
+      if: ctx.json?.fileLockConfiguration?.value?.isFileLockEnabled != null && ctx.json.fileLockConfiguration.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_file_lock_configuration_default_retention_mode
+      field: json.fileLockConfiguration.value.defaultRetention.mode
+      target_field: backblaze_b2.bucket.file_lock_configuration.default_retention.mode
+      if: ctx.json?.fileLockConfiguration?.value?.defaultRetention?.mode != null && ctx.json.fileLockConfiguration.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_file_lock_configuration_default_retention_period_duration
+      field: json.fileLockConfiguration.value.defaultRetention.period.duration
+      target_field: backblaze_b2.bucket.file_lock_configuration.default_retention.period.duration
+      if: ctx.json?.fileLockConfiguration?.value?.defaultRetention?.period?.duration != null && ctx.json.fileLockConfiguration.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_file_lock_configuration_default_retention_period_unit
+      field: json.fileLockConfiguration.value.defaultRetention.period.unit
+      target_field: backblaze_b2.bucket.file_lock_configuration.default_retention.period.unit
+      if: ctx.json?.fileLockConfiguration?.value?.defaultRetention?.period?.unit != null && ctx.json.fileLockConfiguration.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_file_lock_configuration_is_client_authorized_to_read
+      field: json.fileLockConfiguration.isClientAuthorizedToRead
+      target_field: backblaze_b2.bucket.file_lock_configuration.is_client_authorized_to_read
+      if: ctx.json?.fileLockConfiguration?.isClientAuthorizedToRead instanceof Boolean
+
+  # Cloud Replication configuration.
+  - set:
+      tag: set_replication_configuration_is_replication_source_true
+      field: backblaze_b2.bucket.replication_configuration.is_replication_source
+      value: true
+      if: ctx.json?.replicationConfiguration?.isClientAuthorizedToRead == true && ctx.json.replicationConfiguration.value?.asReplicationSource != null
+  - set:
+      tag: set_replication_configuration_is_replication_source_false
+      field: backblaze_b2.bucket.replication_configuration.is_replication_source
+      value: false
+      if: ctx.json?.replicationConfiguration?.isClientAuthorizedToRead == true && ctx.json.replicationConfiguration.value?.asReplicationSource == null
+  - set:
+      tag: set_replication_configuration_is_replication_destination_true
+      field: backblaze_b2.bucket.replication_configuration.is_replication_destination
+      value: true
+      if: ctx.json?.replicationConfiguration?.isClientAuthorizedToRead == true && ctx.json.replicationConfiguration.value?.asReplicationDestination != null
+  - set:
+      tag: set_replication_configuration_is_replication_destination_false
+      field: backblaze_b2.bucket.replication_configuration.is_replication_destination
+      value: false
+      if: ctx.json?.replicationConfiguration?.isClientAuthorizedToRead == true && ctx.json.replicationConfiguration.value?.asReplicationDestination == null
+  - rename:
+      tag: rename_json_replication_source_application_key_id
+      field: json.replicationConfiguration.value.asReplicationSource.sourceApplicationKeyId
+      target_field: backblaze_b2.bucket.replication_configuration.as_replication_source.source_application_key_id
+      if: ctx.json?.replicationConfiguration?.value?.asReplicationSource?.sourceApplicationKeyId != null && ctx.json.replicationConfiguration.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_replication_source_replication_rules
+      field: json.replicationConfiguration.value.asReplicationSource.replicationRules
+      target_field: backblaze_b2.bucket.replication_configuration.as_replication_source.replication_rules
+      if: ctx.json?.replicationConfiguration?.value?.asReplicationSource?.replicationRules instanceof List && !ctx.json.replicationConfiguration.value.asReplicationSource.replicationRules.isEmpty() && ctx.json.replicationConfiguration.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_replication_destination_source_to_destination_key_mapping
+      field: json.replicationConfiguration.value.asReplicationDestination.sourceToDestinationKeyMapping
+      target_field: backblaze_b2.bucket.replication_configuration.as_replication_destination.source_to_destination_key_mapping
+      if: ((ctx.json?.replicationConfiguration?.value?.asReplicationDestination?.sourceToDestinationKeyMapping instanceof Map && !ctx.json.replicationConfiguration.value.asReplicationDestination.sourceToDestinationKeyMapping.isEmpty()) || ctx.json?.replicationConfiguration?.value?.asReplicationDestination?.sourceToDestinationKeyMapping instanceof String) && ctx.json.replicationConfiguration.isClientAuthorizedToRead != false
+  - rename:
+      tag: rename_json_replication_configuration_is_client_authorized_to_read
+      field: json.replicationConfiguration.isClientAuthorizedToRead
+      target_field: backblaze_b2.bucket.replication_configuration.is_client_authorized_to_read
+      if: ctx.json?.replicationConfiguration?.isClientAuthorizedToRead instanceof Boolean
+
+  # ECS categorization. Each document is a periodic inventory record of one
+  # bucket and its configuration, not a record of something that happened.
+  - set:
+      tag: set_event_kind_asset
+      field: event.kind
+      value: asset
+  - append:
+      tag: append_event_category_configuration
+      field: event.category
+      value: configuration
+      allow_duplicates: false
+  - append:
+      tag: append_event_type_info
+      field: event.type
+      value: info
+      allow_duplicates: false
+
+  # Cleanup
+  - remove:
+      tag: remove_json
+      field: json
+      ignore_missing: true
+  - append:
+      tag: append_preserve_original_event_on_error
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false
+      if: ctx.error?.message != null
+on_failure:
+  - append:
+      tag: append_error_message
+      field: error.message
+      value: >-
+        Processor '{{{ _ingest.on_failure_processor_type }}}'
+        {{{#_ingest.on_failure_processor_tag}}}with tag '{{{ _ingest.on_failure_processor_tag }}}'
+        {{{/_ingest.on_failure_processor_tag}}}failed with message '{{{ _ingest.on_failure_message }}}'
+  - set:
+      tag: set_pipeline_error_to_event_kind
+      field: event.kind
+      value: pipeline_error
+  - append:
+      tag: append_preserve_original_event
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false

@@ -1,0 +1,76 @@
+title: Backblaze B2 bucket inventory
+type: logs
+streams:
+  - input: cel
+    title: Backblaze B2 bucket inventory
+    description: Periodically collect the configuration of every bucket in the Backblaze B2 account using the B2 Native API.
+    template_path: cel.yml.hbs
+    vars:
+      - name: url
+        type: text
+        title: API URL
+        description: Base URL of the B2 Native API used to call `b2_authorize_account`. Buckets are listed using the API URL returned by authorization.
+        required: true
+        show_user: false
+        default: https://api.backblazeb2.com
+      - name: interval
+        type: text
+        title: Interval
+        description: How often to collect a snapshot of every bucket. Each collection makes two API calls. Supported units are h, m, and s.
+        required: true
+        show_user: true
+        default: 1h
+      - name: http_client_timeout
+        type: text
+        title: HTTP Client Timeout
+        description: Duration before an HTTP request to B2 times out. Supported units are h, m, and s.
+        required: false
+        show_user: false
+        default: 30s
+      - name: proxy_url
+        type: text
+        title: Proxy URL
+        description: URL of the proxy to use when connecting to B2, for example `http://proxy.example.com:8080`.
+        required: false
+        show_user: false
+      - name: ssl
+        type: yaml
+        title: SSL Configuration
+        description: SSL configuration options. See [documentation](https://www.elastic.co/guide/en/beats/filebeat/current/configuration-ssl.html#ssl-common-config) for details.
+        required: false
+        show_user: false
+      - name: enable_request_tracer
+        type: bool
+        title: Enable request tracing
+        description: >-
+          The request tracer logs HTTP requests and responses to the agent's local file system for debugging configurations. The logged responses include the B2 authorization token, so enable it only while debugging. See [documentation](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-input-cel.html#_resource_tracer_enable) for details.
+        required: false
+        show_user: false
+        default: false
+      - name: tags
+        type: text
+        title: Tags
+        multi: true
+        required: true
+        show_user: false
+        default:
+          - forwarded
+          - backblaze_b2-bucket
+      - name: preserve_original_event
+        type: bool
+        title: Preserve original event
+        description: Preserves a raw copy of the original event, added to the field `event.original`.
+        required: true
+        show_user: true
+        default: false
+      - name: processors
+        type: yaml
+        title: Processors
+        description: >-
+          Processors are used to reduce the number of fields in the exported event or to enhance the event with metadata. This executes in the agent before the logs are parsed. See [Processors](https://www.elastic.co/guide/en/beats/filebeat/current/filtering-and-enhancing-data.html) for details.
+        required: false
+        show_user: false
+elasticsearch:
+  index_template:
+    mappings:
+      subobjects: false

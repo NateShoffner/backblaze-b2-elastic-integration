@@ -1,0 +1,349 @@
+---
+description: Pipeline for parsing Backblaze B2 bucket access logs.
+processors:
+  - set:
+      tag: set_ecs_version
+      field: ecs.version
+      value: '9.3.0'
+  - rename:
+      tag: rename_message_to_event_original
+      field: message
+      target_field: event.original
+      ignore_missing: true
+      description: Renames the original `message` field to `event.original` to store a copy of the original message. The `event.original` field is not touched if the document already has one; it may happen when Logstash sends the document.
+      if: ctx.event?.original == null
+  - remove:
+      tag: remove_message
+      field: message
+      ignore_missing: true
+      description: The `message` field is no longer required if the document has an `event.original` field.
+      if: ctx.event?.original != null
+
+  # Parse the space delimited access log line. Every field is either a value or
+  # `-`. The three quoted fields may also be a bare `-`, as allowed by the
+  # regular expression Backblaze publishes. Trailing fields added by future log
+  # format versions are tolerated and ignored.
+  - grok:
+      tag: grok_access_log
+      field: event.original
+      pattern_definitions:
+        B2_NUMBER: '[0-9]+'
+        B2_QUOTED: '[^"]+'
+        B2_HTTP_VERSION: '[0-9.]+'
+      patterns:
+        - >-
+          ^(?:-|%{NOTSPACE:cloud.account.id})
+          (?:-|%{NOTSPACE:backblaze_b2.access.bucket})
+          \[%{HTTPDATE:_temp.time}\]
+          (?:-|%{IP:source.ip}|%{NOTSPACE:source.address})
+          (?:-|%{NOTSPACE:backblaze_b2.access.requester})
+          (?:-|%{NOTSPACE:http.request.id})
+          (?:-|%{NOTSPACE:event.action})
+          (?:-|%{NOTSPACE:backblaze_b2.access.key})
+          (?:-|"-"|"%{WORD:http.request.method} %{NOTSPACE:url.original} HTTP/%{B2_HTTP_VERSION:http.version}"|"%{B2_QUOTED:backblaze_b2.access.request_uri}")
+          (?:-|%{B2_NUMBER:http.response.status_code:long})
+          (?:-|%{NOTSPACE:error.code})
+          (?:-|%{B2_NUMBER:http.response.body.bytes:long})
+          (?:-|%{B2_NUMBER:backblaze_b2.access.object_size:long})
+          (?:-|%{B2_NUMBER:_temp.total_time:long})
+          (?:-|%{B2_NUMBER:backblaze_b2.access.turn_around_time:long})
+          (?:-|"-"|"%{B2_QUOTED:http.request.referrer}")
+          (?:-|"-"|"%{B2_QUOTED:user_agent.original}")
+          (?:-|%{NOTSPACE:backblaze_b2.access.version_id})
+          (?:-|%{NOTSPACE:backblaze_b2.access.host_id})
+          (?:-|%{NOTSPACE:backblaze_b2.access.signature_version})
+          (?:-|%{NOTSPACE:tls.cipher})
+          (?:-|%{NOTSPACE:backblaze_b2.access.authentication_type})
+          (?:-|%{NOTSPACE:backblaze_b2.access.host_header})
+          (?:-|TLSv%{B2_HTTP_VERSION:tls.version}|%{NOTSPACE:backblaze_b2.access.tls_version})(?:
+          (?:-|%{NOTSPACE:backblaze_b2.access.access_point_arn}))?(?:
+          (?:-|%{NOTSPACE:backblaze_b2.access.acl_required}))?(?: .*)?$
+
+  # Date normalization
+  - date:
+      tag: date_access_log_time
+      field: _temp.time
+      target_field: '@timestamp'
+      formats:
+        - dd/MMM/yyyy:HH:mm:ss Z
+      if: ctx._temp?.time != null
+  - script:
+      tag: script_total_time_to_event_duration
+      lang: painless
+      description: Convert the total request time from milliseconds to nanoseconds for event.duration.
+      if: ctx._temp?.total_time != null
+      params:
+        ms_to_ns: 1000000
+      source: |-
+        ctx.event = ctx.event ?: [:];
+        ctx.event.duration = ctx._temp.total_time * params.ms_to_ns;
+
+  # Requester identity, for example identity:applicationKey:<applicationKeyId>.
+  - grok:
+      tag: grok_requester_identity
+      field: backblaze_b2.access.requester
+      pattern_definitions:
+        B2_IDENTITY_TYPE: '[^:\s]+'
+      patterns:
+        - '^identity:%{B2_IDENTITY_TYPE:backblaze_b2.access.requester_type}(?::%{NOTSPACE:_temp.identity_id})?$'
+      if: ctx.backblaze_b2?.access?.requester instanceof String && ctx.backblaze_b2.access.requester.startsWith('identity:')
+  - rename:
+      tag: rename_identity_id_to_user_id
+      field: _temp.identity_id
+      target_field: user.id
+      ignore_missing: true
+      description: Application key IDs and account IDs identify the credential that made the request.
+      if: ctx.backblaze_b2?.access?.requester_type == 'applicationKey' || ctx.backblaze_b2?.access?.requester_type == 'account'
+  - rename:
+      tag: rename_identity_id_to_user_name
+      field: _temp.identity_id
+      target_field: user.name
+      ignore_missing: true
+      description: Enterprise managed users are identified by user name.
+      if: ctx.backblaze_b2?.access?.requester_type == 'orguser'
+
+  - set:
+      tag: set_tls_version_protocol
+      field: tls.version_protocol
+      value: tls
+      if: ctx.tls?.version != null
+  - uri_parts:
+      tag: uri_parts_url_original
+      field: url.original
+      target_field: url
+      keep_original: true
+      ignore_failure: true
+      if: ctx.url?.original != null
+
+  # Enrichment
+  - user_agent:
+      tag: user_agent_original
+      field: user_agent.original
+      ignore_missing: true
+      if: ctx.user_agent?.original != null
+  - geoip:
+      tag: geoip_source_ip
+      field: source.ip
+      target_field: source.geo
+      ignore_missing: true
+      if: ctx.source?.ip != null && ctx.source.geo == null
+  - geoip:
+      tag: geoip_source_asn
+      database_file: GeoLite2-ASN.mmdb
+      field: source.ip
+      target_field: source.as
+      properties:
+        - asn
+        - organization_name
+      ignore_missing: true
+      if: ctx.source?.ip != null && ctx.source.as == null
+  - rename:
+      tag: rename_source_as_asn
+      field: source.as.asn
+      target_field: source.as.number
+      ignore_missing: true
+  - rename:
+      tag: rename_source_as_organization_name
+      field: source.as.organization_name
+      target_field: source.as.organization.name
+      ignore_missing: true
+
+  # Cloud context
+  - set:
+      tag: set_cloud_provider
+      field: cloud.provider
+      value: backblaze
+  - set:
+      tag: set_cloud_service_name
+      field: cloud.service.name
+      value: b2
+
+  # ECS categorization
+  - set:
+      tag: set_event_kind
+      field: event.kind
+      value: event
+  - append:
+      tag: append_event_category_web
+      field: event.category
+      value: web
+      allow_duplicates: false
+  - append:
+      tag: append_event_type_access
+      field: event.type
+      value: access
+      allow_duplicates: false
+  - set:
+      tag: set_event_outcome_success
+      field: event.outcome
+      value: success
+      if: ctx.http?.response?.status_code != null && ctx.http.response.status_code < 400
+  - set:
+      tag: set_event_outcome_failure
+      field: event.outcome
+      value: failure
+      if: (ctx.http?.response?.status_code != null && ctx.http.response.status_code >= 400) || (ctx.http?.response?.status_code == null && ctx.error?.code != null)
+  # File categorization for operations that create, read, or remove object
+  # data. Operations not in the table (listing, upload URL and part requests,
+  # metadata calls, and the internal `.COPY` records of a server-side copy)
+  # keep only the web access categorization. The `.COPY` records are not mapped
+  # because the copy request itself (B2_COPY_FILE or S3_COPY_OBJECT) is the
+  # creation, so mapping them would count one copy as an extra upload and
+  # download. HEAD requests only return metadata, so they are not file access.
+  - script:
+      tag: script_file_categorization
+      lang: painless
+      description: Add the file category and a creation, access, or deletion type for operations that create, read, or remove object data.
+      if: ctx.event?.action != null
+      params:
+        excluded_methods:
+          - HEAD
+        operations:
+          # B2 Native API. Large file uploads are counted once, when finished.
+          B2_API.B2_UPLOAD_FILE:
+            category: [file]
+            type: [creation]
+          B2_API.B2_COPY_FILE:
+            category: [file]
+            type: [creation]
+          B2_API.B2_FINISH_LARGE_FILE:
+            category: [file]
+            type: [creation]
+          B2_API.B2_DOWNLOAD_FILE_BY_ID:
+            category: [file]
+            type: [access]
+          B2_API.B2_DOWNLOAD_FILE_BY_NAME:
+            category: [file]
+            type: [access]
+          # Hiding a file makes it invisible to listing and download by name.
+          B2_API.B2_HIDE_FILE:
+            category: [file]
+            type: [deletion]
+          B2_API.B2_DELETE_FILE_VERSION:
+            category: [file]
+            type: [deletion]
+          # S3 compatible API, in the documented REST.HTTP_method.resource_type
+          # form and in the REST.S3_<operation> form used in the Backblaze example.
+          REST.PUT.OBJECT:
+            category: [file]
+            type: [creation]
+          REST.S3_PUT_OBJECT:
+            category: [file]
+            type: [creation]
+          REST.S3_COPY_OBJECT:
+            category: [file]
+            type: [creation]
+          REST.S3_COMPLETE_MULTIPART_UPLOAD:
+            category: [file]
+            type: [creation]
+          REST.GET.OBJECT:
+            category: [file]
+            type: [access]
+          REST.S3_GET_OBJECT:
+            category: [file]
+            type: [access]
+          REST.DELETE.OBJECT:
+            category: [file]
+            type: [deletion]
+          REST.S3_DELETE_OBJECT:
+            category: [file]
+            type: [deletion]
+          # One record per key removed by a multi-object delete request.
+          BATCH.DELETE.OBJECT:
+            category: [file]
+            type: [deletion]
+          # Lifecycle rules hide and then delete file versions.
+          B2_LIFECYCLE.HIDE.OBJECT:
+            category: [file]
+            type: [deletion]
+          B2_LIFECYCLE.DELETE.OBJECT:
+            category: [file]
+            type: [deletion]
+      source: |-
+        def mapping = params.operations[ctx.event.action];
+        if (mapping == null) {
+          return;
+        }
+        if (ctx.http != null && ctx.http.request != null && params.excluded_methods.contains(ctx.http.request.method)) {
+          return;
+        }
+        for (def value : mapping.category) {
+          if (!ctx.event.category.contains(value)) {
+            ctx.event.category.add(value);
+          }
+        }
+        for (def value : mapping.type) {
+          if (!ctx.event.type.contains(value)) {
+            ctx.event.type.add(value);
+          }
+        }
+
+  # Related fields
+  - append:
+      tag: append_source_ip_to_related_ip
+      field: related.ip
+      value: '{{{source.ip}}}'
+      allow_duplicates: false
+      if: ctx.source?.ip != null
+  - append:
+      tag: append_user_id_to_related_user
+      field: related.user
+      value: '{{{user.id}}}'
+      allow_duplicates: false
+      if: ctx.user?.id != null
+  - append:
+      tag: append_user_name_to_related_user
+      field: related.user
+      value: '{{{user.name}}}'
+      allow_duplicates: false
+      if: ctx.user?.name != null
+
+  # Backblaze delivers access logs on a best-effort basis and a log object may
+  # repeat lines. The document ID is derived from the record so duplicate
+  # deliveries are idempotent. Request IDs are unique per request, not per
+  # record, and one request can log several records (for example one
+  # BATCH.DELETE.OBJECT record per deleted key, or the internal records of a
+  # server-side copy), so the operation, key, and version ID are also hashed.
+  - fingerprint:
+      tag: fingerprint_document_id
+      fields:
+        - '@timestamp'
+        - cloud.account.id
+        - backblaze_b2.access.bucket
+        - http.request.id
+        - event.action
+        - backblaze_b2.access.key
+        - backblaze_b2.access.version_id
+      target_field: _id
+      method: SHA-256
+      ignore_missing: true
+      if: ctx.http?.request?.id != null
+
+  # Cleanup
+  - remove:
+      tag: remove_temp
+      field: _temp
+      ignore_missing: true
+  - append:
+      tag: append_preserve_original_event_on_error
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false
+      if: ctx.error?.message != null
+on_failure:
+  - append:
+      tag: append_error_message
+      field: error.message
+      value: >-
+        Processor '{{{ _ingest.on_failure_processor_type }}}'
+        {{{#_ingest.on_failure_processor_tag}}}with tag '{{{ _ingest.on_failure_processor_tag }}}'
+        {{{/_ingest.on_failure_processor_tag}}}failed with message '{{{ _ingest.on_failure_message }}}'
+  - set:
+      tag: set_pipeline_error_to_event_kind
+      field: event.kind
+      value: pipeline_error
+  - append:
+      tag: append_preserve_original_event
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false

@@ -1,0 +1,70 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-09-14T00:00:00.000Z",
+            "aws": {
+                "s3": {
+                    "bucket": {
+                        "name": "b2-reports-0a1b2c3d4e5f"
+                    },
+                    "object": {
+                        "key": "2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                    }
+                }
+            },
+            "backblaze_b2": {
+                "usage": {
+                    "api_txn_class_a": 1250000,
+                    "api_txn_class_b": 9876543,
+                    "api_txn_class_c": 4321098765,
+                    "api_txn_class_d": 12345,
+                    "api_txn_total": 4332237653,
+                    "average_stored_bytes": 48210660000000,
+                    "deleted_gb": 87.12,
+                    "downloaded_bytes": 2350748123456,
+                    "downloaded_favored_bytes": 1073741824000,
+                    "downloaded_gb": 2350.75,
+                    "line_version": "3",
+                    "reporting_location": "us-west-004",
+                    "scope": "bucket",
+                    "storage_byte_hours": 1157055840000000,
+                    "stored_gb": 48210.66,
+                    "uploaded_gb": 125.4
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "region": "us-west-004",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "6f7a8b9c0d1e2f3a4b5c6d7e",
+                "name": "example-media",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "kind": "metric",
+                "original": "3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,6f7a8b9c0d1e2f3a4b5c6d7e,example-media,125.40,87.12,2350.75,2350748123456,1073741824000,48210.66,1157055840000000,1250000,9876543,4321098765,12345,,,"
+            },
+            "log": {
+                "file": {
+                    "path": "https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        }
+    ]
+}

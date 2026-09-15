@@ -1,0 +1,84 @@
+title: Backblaze B2 bucket access logs
+type: logs
+streams:
+  - input: aws-s3
+    title: Backblaze B2 bucket access logs
+    description: Collect bucket access logs that Backblaze B2 writes to a log destination bucket.
+    template_path: aws-s3.yml.hbs
+    vars:
+      - name: bucket_name
+        type: text
+        title: Log Destination Bucket Name
+        description: Name of the B2 bucket that receives bucket access logs.
+        required: true
+        show_user: true
+      - name: bucket_list_prefix
+        type: text
+        title: Bucket Prefix
+        description: Object key prefix configured as the access log destination prefix. Leave empty to read the whole bucket.
+        show_user: true
+      - name: exclude_operations
+        type: text
+        title: Operations to Drop
+        description: >-
+          B2 operations to drop in Elastic Agent before they're sent to Elasticsearch. Each entry must be a complete operation name, for example `B2_API.B2_LIST_FILE_NAMES`, and matches any log line that contains it as a space-separated token. Prefixes and wildcards aren't supported. Backup tools that sync with the B2 Native API can log hundreds of thousands of `B2_API.B2_LIST_FILE_NAMES` calls per run. Remove all entries to collect every operation.
+        multi: true
+        required: false
+        show_user: true
+        default:
+          - B2_API.B2_LIST_FILE_NAMES
+      - name: bucket_list_interval
+        type: text
+        title: Bucket List Interval
+        description: How often to list the bucket for new log objects. Supported units are h, m, and s.
+        required: true
+        show_user: false
+        default: 5m
+      - name: number_of_workers
+        type: integer
+        title: Number of Workers
+        description: Number of workers that process the listed log objects.
+        required: true
+        show_user: false
+        default: 5
+      - name: ignore_older
+        type: text
+        title: Ignore Older Timespan
+        description: Skip log objects last modified longer ago than this duration, for example `720h`. Useful to limit the initial backfill.
+        show_user: false
+      - name: start_timestamp
+        type: text
+        title: Start Timestamp
+        description: Only read log objects last modified after this timestamp, in `YYYY-MM-DDTHH:MM:SSZ` format.
+        show_user: false
+      - name: proxy_url
+        type: text
+        title: Proxy URL
+        description: URL of the proxy to use when connecting to B2, for example `http://proxy.example.com:8080`.
+        show_user: false
+      - name: tags
+        type: text
+        title: Tags
+        multi: true
+        required: true
+        show_user: false
+        default:
+          - forwarded
+          - backblaze_b2-access
+      - name: preserve_original_event
+        type: bool
+        title: Preserve original event
+        description: Preserves a raw copy of the original event, added to the field `event.original`.
+        required: true
+        show_user: true
+        default: false
+      - name: processors
+        type: yaml
+        title: Processors
+        description: >-
+          Processors are used to reduce the number of fields in the exported event or to enhance the event with metadata. This executes in the agent before the logs are parsed. See [Processors](https://www.elastic.co/guide/en/beats/filebeat/current/filtering-and-enhancing-data.html) for details.
+        show_user: false
+elasticsearch:
+  index_template:
+    mappings:
+      subobjects: false

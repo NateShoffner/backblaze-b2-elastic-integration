@@ -1,0 +1,172 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-09-14T12:00:00.000Z",
+            "backblaze_b2": {
+                "bucket": {
+                    "bucket_type": "allPrivate",
+                    "cors_rules_count": 0,
+                    "default_server_side_encryption": {
+                        "algorithm": "AES256",
+                        "is_client_authorized_to_read": true,
+                        "is_enabled": true,
+                        "mode": "SSE-B2"
+                    },
+                    "file_lock_configuration": {
+                        "default_retention": {
+                            "mode": "governance",
+                            "period": {
+                                "duration": 30,
+                                "unit": "days"
+                            }
+                        },
+                        "is_client_authorized_to_read": true,
+                        "is_file_lock_enabled": true
+                    },
+                    "is_public": false,
+                    "lifecycle_rules": [
+                        {
+                            "days_from_hiding_to_deleting": 7,
+                            "file_name_prefix": ""
+                        },
+                        {
+                            "days_from_hiding_to_deleting": 1,
+                            "days_from_uploading_to_hiding": 30,
+                            "file_name_prefix": "tmp/"
+                        }
+                    ],
+                    "lifecycle_rules_count": 2,
+                    "options": [
+                        "s3"
+                    ],
+                    "replication_configuration": {
+                        "as_replication_source": {
+                            "replication_rules": [
+                                {
+                                    "destination_bucket_id": "1a2b3c4d5e6f7a8b9c0d0006",
+                                    "file_name_prefix": "",
+                                    "include_existing_files": false,
+                                    "is_enabled": true,
+                                    "priority": 1,
+                                    "replication_rule_name": "example-replication-rule"
+                                }
+                            ],
+                            "source_application_key_id": "0040a1b2c3d4e5f0000000009"
+                        },
+                        "is_client_authorized_to_read": true,
+                        "is_replication_destination": false,
+                        "is_replication_source": true
+                    },
+                    "revision": 4
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "1a2b3c4d5e6f7a8b9c0d0001",
+                "name": "example-backups",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "category": [
+                    "configuration"
+                ],
+                "kind": "asset",
+                "original": "{\"accountId\":\"0a1b2c3d4e5f\",\"bucketId\":\"1a2b3c4d5e6f7a8b9c0d0001\",\"bucketInfo\":{},\"bucketName\":\"example-backups\",\"bucketType\":\"allPrivate\",\"corsRules\":[],\"defaultServerSideEncryption\":{\"isClientAuthorizedToRead\":true,\"value\":{\"algorithm\":\"AES256\",\"mode\":\"SSE-B2\"}},\"fileLockConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"defaultRetention\":{\"mode\":\"governance\",\"period\":{\"duration\":30,\"unit\":\"days\"}},\"isFileLockEnabled\":true}},\"lifecycleRules\":[{\"daysFromHidingToDeleting\":7,\"daysFromUploadingToHiding\":null,\"fileNamePrefix\":\"\"},{\"daysFromHidingToDeleting\":1,\"daysFromUploadingToHiding\":30,\"fileNamePrefix\":\"tmp/\"}],\"options\":[\"s3\"],\"replicationConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"asReplicationDestination\":null,\"asReplicationSource\":{\"replicationRules\":[{\"destinationBucketId\":\"1a2b3c4d5e6f7a8b9c0d0006\",\"fileNamePrefix\":\"\",\"includeExistingFiles\":false,\"isEnabled\":true,\"priority\":1,\"replicationRuleName\":\"example-replication-rule\"}],\"sourceApplicationKeyId\":\"0040a1b2c3d4e5f0000000009\"}}},\"revision\":4}",
+                "type": [
+                    "info"
+                ]
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        },
+        {
+            "@timestamp": "2026-09-14T12:00:00.000Z",
+            "backblaze_b2": {
+                "bucket": {
+                    "bucket_type": "allPrivate",
+                    "cors_rules_count": 0,
+                    "default_server_side_encryption": {
+                        "algorithm": "AES256",
+                        "is_client_authorized_to_read": true,
+                        "is_enabled": true,
+                        "mode": "SSE-B2"
+                    },
+                    "file_lock_configuration": {
+                        "is_client_authorized_to_read": true,
+                        "is_file_lock_enabled": false
+                    },
+                    "is_public": false,
+                    "lifecycle_rules": [
+                        {
+                            "days_from_hiding_to_deleting": 30,
+                            "file_name_prefix": "backup/"
+                        }
+                    ],
+                    "lifecycle_rules_count": 1,
+                    "options": [
+                        "s3"
+                    ],
+                    "replication_configuration": {
+                        "as_replication_destination": {
+                            "source_to_destination_key_mapping": {
+                                "0040a1b2c3d4e5f0000000009": "0040f5e4d3c2b1a0000000010"
+                            }
+                        },
+                        "is_client_authorized_to_read": true,
+                        "is_replication_destination": true,
+                        "is_replication_source": false
+                    },
+                    "revision": 2
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "1a2b3c4d5e6f7a8b9c0d0006",
+                "name": "example-backups-replica",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "category": [
+                    "configuration"
+                ],
+                "kind": "asset",
+                "original": "{\"accountId\":\"0a1b2c3d4e5f\",\"bucketId\":\"1a2b3c4d5e6f7a8b9c0d0006\",\"bucketInfo\":{},\"bucketName\":\"example-backups-replica\",\"bucketType\":\"allPrivate\",\"corsRules\":[],\"defaultServerSideEncryption\":{\"isClientAuthorizedToRead\":true,\"value\":{\"algorithm\":\"AES256\",\"mode\":\"SSE-B2\"}},\"fileLockConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"defaultRetention\":{\"mode\":null,\"period\":null},\"isFileLockEnabled\":false}},\"lifecycleRules\":{\"daysFromHidingToDeleting\":30,\"daysFromUploadingToHiding\":null,\"fileNamePrefix\":\"backup/\"},\"options\":[\"s3\"],\"replicationConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"asReplicationDestination\":{\"sourceToDestinationKeyMapping\":{\"0040a1b2c3d4e5f0000000009\":\"0040f5e4d3c2b1a0000000010\"}},\"asReplicationSource\":null}},\"revision\":2}",
+                "type": [
+                    "info"
+                ]
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        }
+    ]
+}

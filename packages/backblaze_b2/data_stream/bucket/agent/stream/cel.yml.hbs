@@ -1,0 +1,85 @@
+interval: {{interval}}
+resource.tracer:
+  enabled: {{enable_request_tracer}}
+  filename: "../../logs/cel/http-request-trace-*.ndjson"
+  maxbackups: 5
+{{#if proxy_url}}
+resource.proxy_url: {{proxy_url}}
+{{/if}}
+{{#if ssl}}
+resource.ssl: {{ssl}}
+{{/if}}
+{{#if http_client_timeout}}
+resource.timeout: {{http_client_timeout}}
+{{/if}}
+resource.url: {{url}}
+auth.basic:
+  user: {{escape_string application_key_id}}
+  password: {{escape_string application_key}}
+redact:
+  fields: ~
+program: |-
+  // Authorize with the application key (Basic auth from auth.basic config).
+  get(state.url.trim_right("/") + "/b2api/v4/b2_authorize_account").as(auth,
+    state.with(
+      (auth.StatusCode != 200) ?
+        {
+          "events": {
+            "error": {
+              "code": string(auth.StatusCode),
+              "id": string(auth.Status),
+              "message": "GET /b2api/v4/b2_authorize_account: " + ((size(auth.Body) != 0) ? string(auth.Body) : string(auth.Status)),
+            },
+          },
+          "want_more": false,
+        }
+      :
+        // List every bucket type with the short-lived token. The token is only
+        // bound locally and never written to state or the cursor.
+        auth.Body.decode_json().as(authz,
+          request(
+            "POST",
+            authz.apiInfo.storageApi.apiUrl.trim_right("/") + "/b2api/v4/b2_list_buckets",
+            {"accountId": authz.accountId, "bucketTypes": ["all"]}.encode_json()
+          ).with(
+            {
+              "Header": {
+                "Authorization": [authz.authorizationToken],
+                "Content-Type": ["application/json"],
+              },
+            }
+          ).do_request().as(resp,
+            (resp.StatusCode == 200) ?
+              {
+                "events": resp.Body.decode_json().?buckets.orValue([]).map(b, {"message": b.encode_json()}),
+                "want_more": false,
+              }
+            :
+              {
+                "events": {
+                  "error": {
+                    "code": string(resp.StatusCode),
+                    "id": string(resp.Status),
+                    "message": "POST /b2api/v4/b2_list_buckets: " + ((size(resp.Body) != 0) ? string(resp.Body) : string(resp.Status)),
+                  },
+                },
+                "want_more": false,
+              }
+          )
+        )
+    )
+  )
+tags:
+{{#if preserve_original_event}}
+  - preserve_original_event
+{{/if}}
+{{#each tags as |tag|}}
+  - {{tag}}
+{{/each}}
+{{#contains "forwarded" tags}}
+publisher_pipeline.disable_host: true
+{{/contains}}
+{{#if processors}}
+processors:
+{{processors}}
+{{/if}}

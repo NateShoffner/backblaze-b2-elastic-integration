@@ -1,0 +1,19 @@
+- name: input.type
+  type: keyword
+  description: Type of filebeat input.
+- name: log.offset
+  type: long
+  description: Log offset.
+- name: aws.s3
+  type: group
+  description: Report object metadata added by the aws-s3 input.
+  fields:
+    - name: bucket.name
+      type: keyword
+      description: Name of the bucket that holds the report object.
+    - name: bucket.arn
+      type: keyword
+      description: ARN of the bucket that holds the report object, when available.
+    - name: object.key
+      type: keyword
+      description: Key of the report object the event was read from.

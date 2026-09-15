@@ -1,0 +1,7 @@
+input: cel
+vars:
+  application_key_id: "0040000000000000000000002"
+  application_key: "K004exampleexampleexampleexample"
+data_stream:
+  vars:
+    interval: 1h

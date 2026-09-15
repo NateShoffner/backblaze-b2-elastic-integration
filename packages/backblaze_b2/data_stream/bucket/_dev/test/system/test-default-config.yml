@@ -1,0 +1,15 @@
+wait_for_data_timeout: 1m
+input: cel
+service: backblaze-b2-bucket
+vars:
+  application_key_id: 0040a1b2c3d4e5f0000000001
+  application_key: K004exampleApplicationKey000000
+data_stream:
+  vars:
+    url: http://{{Hostname}}:{{Port}}
+    interval: 2s
+    preserve_original_event: true
+    enable_request_tracer: true
+assert:
+  # Round 1 lists 2 buckets, round 2 lists 1 bucket, later rounds list none.
+  hit_count: 3

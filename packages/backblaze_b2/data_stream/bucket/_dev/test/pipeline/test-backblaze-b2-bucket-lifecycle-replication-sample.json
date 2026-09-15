@@ -1,0 +1,12 @@
+{
+    "events": [
+        {
+            "@timestamp": "2026-09-14T12:00:00.000Z",
+            "message": "{\"accountId\":\"0a1b2c3d4e5f\",\"bucketId\":\"1a2b3c4d5e6f7a8b9c0d0001\",\"bucketInfo\":{},\"bucketName\":\"example-backups\",\"bucketType\":\"allPrivate\",\"corsRules\":[],\"defaultServerSideEncryption\":{\"isClientAuthorizedToRead\":true,\"value\":{\"algorithm\":\"AES256\",\"mode\":\"SSE-B2\"}},\"fileLockConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"defaultRetention\":{\"mode\":\"governance\",\"period\":{\"duration\":30,\"unit\":\"days\"}},\"isFileLockEnabled\":true}},\"lifecycleRules\":[{\"daysFromHidingToDeleting\":7,\"daysFromUploadingToHiding\":null,\"fileNamePrefix\":\"\"},{\"daysFromHidingToDeleting\":1,\"daysFromUploadingToHiding\":30,\"fileNamePrefix\":\"tmp/\"}],\"options\":[\"s3\"],\"replicationConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"asReplicationDestination\":null,\"asReplicationSource\":{\"replicationRules\":[{\"destinationBucketId\":\"1a2b3c4d5e6f7a8b9c0d0006\",\"fileNamePrefix\":\"\",\"includeExistingFiles\":false,\"isEnabled\":true,\"priority\":1,\"replicationRuleName\":\"example-replication-rule\"}],\"sourceApplicationKeyId\":\"0040a1b2c3d4e5f0000000009\"}}},\"revision\":4}"
+        },
+        {
+            "@timestamp": "2026-09-14T12:00:00.000Z",
+            "message": "{\"accountId\":\"0a1b2c3d4e5f\",\"bucketId\":\"1a2b3c4d5e6f7a8b9c0d0006\",\"bucketInfo\":{},\"bucketName\":\"example-backups-replica\",\"bucketType\":\"allPrivate\",\"corsRules\":[],\"defaultServerSideEncryption\":{\"isClientAuthorizedToRead\":true,\"value\":{\"algorithm\":\"AES256\",\"mode\":\"SSE-B2\"}},\"fileLockConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"defaultRetention\":{\"mode\":null,\"period\":null},\"isFileLockEnabled\":false}},\"lifecycleRules\":{\"daysFromHidingToDeleting\":30,\"daysFromUploadingToHiding\":null,\"fileNamePrefix\":\"backup/\"},\"options\":[\"s3\"],\"replicationConfiguration\":{\"isClientAuthorizedToRead\":true,\"value\":{\"asReplicationDestination\":{\"sourceToDestinationKeyMapping\":{\"0040a1b2c3d4e5f0000000009\":\"0040f5e4d3c2b1a0000000010\"}},\"asReplicationSource\":null}},\"revision\":2}"
+        }
+    ]
+}

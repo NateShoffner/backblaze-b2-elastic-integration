@@ -1,0 +1,393 @@
+{
+    "expected": [
+        null,
+        {
+            "@timestamp": "2026-09-14T00:00:00.000Z",
+            "aws": {
+                "s3": {
+                    "bucket": {
+                        "name": "b2-reports-0a1b2c3d4e5f"
+                    },
+                    "object": {
+                        "key": "2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                    }
+                }
+            },
+            "backblaze_b2": {
+                "usage": {
+                    "api_txn_class_a": 0,
+                    "api_txn_class_b": 0,
+                    "api_txn_class_c": 52,
+                    "api_txn_class_d": 0,
+                    "api_txn_total": 52,
+                    "average_stored_bytes": 0,
+                    "deleted_gb": 0.0,
+                    "downloaded_bytes": 0,
+                    "downloaded_favored_bytes": 0,
+                    "downloaded_gb": 0.0,
+                    "line_version": "3",
+                    "reporting_location": "us-west-004",
+                    "scope": "account",
+                    "storage_byte_hours": 0,
+                    "stored_gb": 0.0,
+                    "uploaded_gb": 0.0
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "region": "us-west-004",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "event": {
+                "kind": "metric",
+                "original": "3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,,,0.00,0.00,0.00,0,0,0.00,0,0,0,52,0,,,"
+            },
+            "log": {
+                "file": {
+                    "path": "https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        },
+        {
+            "@timestamp": "2026-09-14T00:00:00.000Z",
+            "aws": {
+                "s3": {
+                    "bucket": {
+                        "name": "b2-reports-0a1b2c3d4e5f"
+                    },
+                    "object": {
+                        "key": "2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                    }
+                }
+            },
+            "backblaze_b2": {
+                "usage": {
+                    "api_txn_class_a": 2840,
+                    "api_txn_class_b": 1210,
+                    "api_txn_class_c": 812345,
+                    "api_txn_class_d": 0,
+                    "api_txn_total": 816395,
+                    "average_stored_bytes": 1520350000000,
+                    "deleted_gb": 1.05,
+                    "downloaded_bytes": 0,
+                    "downloaded_favored_bytes": 0,
+                    "downloaded_gb": 0.0,
+                    "line_version": "3",
+                    "reporting_location": "us-west-004",
+                    "scope": "bucket",
+                    "storage_byte_hours": 36488400000000,
+                    "stored_gb": 1520.35,
+                    "uploaded_gb": 3.12
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "region": "us-west-004",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "1a2b3c4d5e6f7a8b9c0d1e2f",
+                "name": "example-backups",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "kind": "metric",
+                "original": "3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,1a2b3c4d5e6f7a8b9c0d1e2f,example-backups,3.12,1.05,0.00,0,0,1520.35,36488400000000,2840,1210,812345,0,,,"
+            },
+            "log": {
+                "file": {
+                    "path": "https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        },
+        {
+            "@timestamp": "2026-09-14T00:00:00.000Z",
+            "aws": {
+                "s3": {
+                    "bucket": {
+                        "name": "b2-reports-0a1b2c3d4e5f"
+                    },
+                    "object": {
+                        "key": "2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                    }
+                }
+            },
+            "backblaze_b2": {
+                "usage": {
+                    "api_txn_class_a": 0,
+                    "api_txn_class_b": 0,
+                    "api_txn_class_c": 0,
+                    "api_txn_class_d": 0,
+                    "api_txn_total": 0,
+                    "average_stored_bytes": 300000,
+                    "deleted_gb": 0.0,
+                    "downloaded_bytes": 0,
+                    "downloaded_favored_bytes": 0,
+                    "downloaded_gb": 0.0,
+                    "line_version": "3",
+                    "reporting_location": "us-west-004",
+                    "scope": "bucket",
+                    "storage_byte_hours": 7200000,
+                    "stored_gb": 0.0,
+                    "uploaded_gb": 0.0
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "region": "us-west-004",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "2b3c4d5e6f7a8b9c0d1e2f3a",
+                "name": "example-scratch",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "kind": "metric",
+                "original": "3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,2b3c4d5e6f7a8b9c0d1e2f3a,example-scratch,0.00,0.00,0.00,0,0,0.00,7200000,0,0,0,0,,,"
+            },
+            "log": {
+                "file": {
+                    "path": "https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        },
+        {
+            "@timestamp": "2026-09-14T00:00:00.000Z",
+            "aws": {
+                "s3": {
+                    "bucket": {
+                        "name": "b2-reports-0a1b2c3d4e5f"
+                    },
+                    "object": {
+                        "key": "2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                    }
+                }
+            },
+            "backblaze_b2": {
+                "usage": {
+                    "api_txn_class_a": 0,
+                    "api_txn_class_b": 0,
+                    "api_txn_class_c": 1830,
+                    "api_txn_class_d": 0,
+                    "api_txn_total": 1830,
+                    "average_stored_bytes": 6250000000,
+                    "deleted_gb": 0.0,
+                    "downloaded_bytes": 0,
+                    "downloaded_favored_bytes": 0,
+                    "downloaded_gb": 0.0,
+                    "line_version": "3",
+                    "reporting_location": "us-west-004",
+                    "scope": "bucket",
+                    "storage_byte_hours": 150000000000,
+                    "stored_gb": 6.25,
+                    "uploaded_gb": 0.0
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "region": "us-west-004",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "3c4d5e6f7a8b9c0d1e2f3a4b",
+                "name": "example-archive",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "kind": "metric",
+                "original": "3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,3c4d5e6f7a8b9c0d1e2f3a4b,example-archive,0.00,0.00,0.00,0,0,6.25,150000000000,0,0,1830,0,,,"
+            },
+            "log": {
+                "file": {
+                    "path": "https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        },
+        {
+            "@timestamp": "2026-09-14T00:00:00.000Z",
+            "aws": {
+                "s3": {
+                    "bucket": {
+                        "name": "b2-reports-0a1b2c3d4e5f"
+                    },
+                    "object": {
+                        "key": "2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                    }
+                }
+            },
+            "backblaze_b2": {
+                "usage": {
+                    "api_txn_class_a": 0,
+                    "api_txn_class_b": 0,
+                    "api_txn_class_c": 12,
+                    "api_txn_class_d": 0,
+                    "api_txn_total": 12,
+                    "average_stored_bytes": 0,
+                    "deleted_gb": 0.0,
+                    "downloaded_bytes": 0,
+                    "downloaded_favored_bytes": 0,
+                    "downloaded_gb": 0.0,
+                    "line_version": "3",
+                    "reporting_location": "us-west-004",
+                    "scope": "bucket",
+                    "storage_byte_hours": 0,
+                    "stored_gb": 0.0,
+                    "uploaded_gb": 0.0
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "region": "us-west-004",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "4d5e6f7a8b9c0d1e2f3a4b5c",
+                "name": "b2-snapshots-0a1b2c3d4e5f",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "kind": "metric",
+                "original": "3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,4d5e6f7a8b9c0d1e2f3a4b5c,b2-snapshots-0a1b2c3d4e5f,0.00,0.00,0.00,0,0,0.00,0,0,0,12,0,,,"
+            },
+            "log": {
+                "file": {
+                    "path": "https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        },
+        {
+            "@timestamp": "2026-09-14T00:00:00.000Z",
+            "aws": {
+                "s3": {
+                    "bucket": {
+                        "name": "b2-reports-0a1b2c3d4e5f"
+                    },
+                    "object": {
+                        "key": "2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                    }
+                }
+            },
+            "backblaze_b2": {
+                "usage": {
+                    "api_txn_class_a": 24,
+                    "api_txn_class_b": 11,
+                    "api_txn_class_c": 16,
+                    "api_txn_class_d": 0,
+                    "api_txn_total": 51,
+                    "average_stored_bytes": 250000000,
+                    "deleted_gb": 0.0,
+                    "downloaded_bytes": 80123456,
+                    "downloaded_favored_bytes": 0,
+                    "downloaded_gb": 0.08,
+                    "line_version": "3",
+                    "reporting_location": "us-west-004",
+                    "scope": "bucket",
+                    "storage_byte_hours": 6000000000,
+                    "stored_gb": 0.25,
+                    "uploaded_gb": 0.25
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0a1b2c3d4e5f"
+                },
+                "provider": "backblaze",
+                "region": "us-west-004",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "entity": {
+                "id": "5e6f7a8b9c0d1e2f3a4b5c6d",
+                "name": "example-access-logs",
+                "sub_type": "backblaze_b2_bucket",
+                "type": [
+                    "bucket"
+                ]
+            },
+            "event": {
+                "kind": "metric",
+                "original": "3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,5e6f7a8b9c0d1e2f3a4b5c6d,example-access-logs,0.25,0.00,0.08,80123456,0,0.25,6000000000,24,11,16,0,,,"
+            },
+            "log": {
+                "file": {
+                    "path": "https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.account-0a1b2c3d4e5f.csv"
+                }
+            },
+            "tags": [
+                "preserve_original_event"
+            ]
+        }
+    ]
+}

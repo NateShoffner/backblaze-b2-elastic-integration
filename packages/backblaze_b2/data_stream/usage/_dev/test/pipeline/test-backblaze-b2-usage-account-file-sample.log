@@ -1,0 +1,7 @@
+line_version,date,group_id,reporting_location,account_id,account_email,bucket_id,bucket_name,uploaded_gb,deleted_gb,downloaded_gb,downloaded_bytes,downloaded_favored_bytes,stored_gb,storage_byte_hours,api_txn_class_a,api_txn_class_b,api_txn_class_c,api_txn_class_d,resource_name,resource_group_name,resource_group_id
+3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,,,0.00,0.00,0.00,0,0,0.00,0,0,0,52,0,,,
+3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,1a2b3c4d5e6f7a8b9c0d1e2f,example-backups,3.12,1.05,0.00,0,0,1520.35,36488400000000,2840,1210,812345,0,,,
+3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,2b3c4d5e6f7a8b9c0d1e2f3a,example-scratch,0.00,0.00,0.00,0,0,0.00,7200000,0,0,0,0,,,
+3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,3c4d5e6f7a8b9c0d1e2f3a4b,example-archive,0.00,0.00,0.00,0,0,6.25,150000000000,0,0,1830,0,,,
+3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,4d5e6f7a8b9c0d1e2f3a4b5c,b2-snapshots-0a1b2c3d4e5f,0.00,0.00,0.00,0,0,0.00,0,0,0,12,0,,,
+3,2026-09-14,,us-west-004,0a1b2c3d4e5f,user@example.com,5e6f7a8b9c0d1e2f3a4b5c6d,example-access-logs,0.25,0.00,0.08,80123456,0,0.25,6000000000,24,11,16,0,,,

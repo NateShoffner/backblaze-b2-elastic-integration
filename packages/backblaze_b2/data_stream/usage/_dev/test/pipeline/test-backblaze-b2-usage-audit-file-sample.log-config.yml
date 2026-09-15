@@ -1,0 +1,14 @@
+fields:
+  tags:
+    - preserve_original_event
+  aws:
+    s3:
+      bucket:
+        name: b2-reports-0a1b2c3d4e5f
+      object:
+        key: 2026-09-14/usage.audit-account-0a1b2c3d4e5f.csv
+  cloud:
+    region: us-west-004
+  log:
+    file:
+      path: https://s3.us-west-004.backblazeb2.com/b2-reports-0a1b2c3d4e5f/2026-09-14/usage.audit-account-0a1b2c3d4e5f.csv

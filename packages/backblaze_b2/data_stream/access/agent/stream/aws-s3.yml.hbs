@@ -1,0 +1,62 @@
+non_aws_bucket_name: {{escape_string bucket_name}}
+endpoint: https://s3.{{region}}.backblazeb2.com
+region: {{escape_string region}}
+default_region: {{escape_string region}}
+access_key_id: {{escape_string application_key_id}}
+secret_access_key: {{application_key}}
+{{#if bucket_list_prefix}}
+bucket_list_prefix: {{escape_string bucket_list_prefix}}
+{{/if}}
+{{#if bucket_list_interval}}
+bucket_list_interval: {{bucket_list_interval}}
+{{/if}}
+{{#if number_of_workers}}
+number_of_workers: {{number_of_workers}}
+{{/if}}
+{{#if ignore_older}}
+ignore_older: {{ignore_older}}
+{{/if}}
+{{#if start_timestamp}}
+start_timestamp: {{start_timestamp}}
+{{/if}}
+{{#if proxy_url}}
+proxy_url: {{proxy_url}}
+{{/if}}
+
+{{#if tags.length}}
+tags:
+{{#each tags as |tag|}}
+- {{tag}}
+{{/each}}
+{{#if preserve_original_event}}
+- preserve_original_event
+{{/if}}
+{{else}}
+{{#if preserve_original_event}}
+tags:
+- preserve_original_event
+{{/if}}
+{{/if}}
+
+{{#contains "forwarded" tags}}
+publisher_pipeline.disable_host: true
+{{/contains}}
+
+{{#if exclude_operations.length}}
+processors:
+- drop_event:
+    when:
+      or:
+{{#each exclude_operations as |operation|}}
+        - contains:
+            message: " {{operation}} "
+{{/each}}
+{{#if processors}}
+{{processors}}
+{{/if}}
+{{else}}
+{{#if processors}}
+processors:
+{{processors}}
+{{/if}}
+{{/if}}

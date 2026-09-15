@@ -1,0 +1,210 @@
+rules:
+  # b2_authorize_account: valid application key. apiUrl points back at this
+  # mock using the container hostname and port.
+  - path: /b2api/v4/b2_authorize_account
+    methods: ['GET']
+    user: 0040a1b2c3d4e5f0000000001
+    password: K004exampleApplicationKey000000
+    responses:
+      - status_code: 200
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"accountId":"0a1b2c3d4e5f","apiInfo":{"storageApi":{"absoluteMinimumPartSize":5000000,"apiUrl":"http://{{ hostname }}:{{ env "PORT" }}","allowed":{"buckets":null,"capabilities":["listBuckets","listAllBucketNames","readBuckets"],"namePrefix":null},"downloadUrl":"http://{{ hostname }}:{{ env "PORT" }}","recommendedPartSize":100000000,"s3ApiUrl":"http://{{ hostname }}:{{ env "PORT" }}"}},"applicationKeyExpirationTimestamp":null,"authorizationToken":"4_example_token"}'
+  # b2_authorize_account: key for an account with no buckets.
+  - path: /b2api/v4/b2_authorize_account
+    methods: ['GET']
+    user: 0040a1b2c3d4e5f0000000002
+    password: K004exampleApplicationKey000002
+    responses:
+      - status_code: 200
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"accountId":"0a1b2c3d4e5f","apiInfo":{"storageApi":{"apiUrl":"http://{{ hostname }}:{{ env "PORT" }}","allowed":{"buckets":null,"capabilities":["listBuckets"],"namePrefix":null}}},"applicationKeyExpirationTimestamp":null,"authorizationToken":"4_example_token_empty"}'
+  # b2_authorize_account: key whose token is rejected by b2_list_buckets.
+  - path: /b2api/v4/b2_authorize_account
+    methods: ['GET']
+    user: 0040a1b2c3d4e5f0000000003
+    password: K004exampleApplicationKey000003
+    responses:
+      - status_code: 200
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"accountId":"0a1b2c3d4e5f","apiInfo":{"storageApi":{"apiUrl":"http://{{ hostname }}:{{ env "PORT" }}","allowed":{"buckets":null,"capabilities":["listBuckets"],"namePrefix":null}}},"applicationKeyExpirationTimestamp":null,"authorizationToken":"4_example_token_expired"}'
+  # b2_authorize_account: any other credentials.
+  - path: /b2api/v4/b2_authorize_account
+    methods: ['GET']
+    responses:
+      - status_code: 401
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"status":401,"code":"unauthorized","message":"The applicationKeyId and/or the applicationKey are wrong."}'
+  # b2_list_buckets: valid token and request body. The first request returns
+  # two buckets, the second returns one bucket with a new revision, and every
+  # later request returns no buckets.
+  - path: /b2api/v4/b2_list_buckets
+    methods: ['POST']
+    request_headers:
+      Authorization:
+        - '^4_example_token$'
+    request_body: '/"accountId":"0a1b2c3d4e5f".*"bucketTypes":\["all"\]/'
+    responses:
+      - status_code: 200
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: |-
+          {{ if eq .req_num 1 }}{{ minify_json `
+          {
+            "buckets": [
+              {
+                "accountId": "0a1b2c3d4e5f",
+                "bucketId": "1a2b3c4d5e6f7a8b9c0d0001",
+                "bucketInfo": {"environment": "production"},
+                "bucketName": "example-backups",
+                "bucketType": "allPrivate",
+                "corsRules": [],
+                "defaultServerSideEncryption": {
+                  "isClientAuthorizedToRead": true,
+                  "value": {"algorithm": "AES256", "mode": "SSE-B2"}
+                },
+                "fileLockConfiguration": {
+                  "isClientAuthorizedToRead": true,
+                  "value": {
+                    "defaultRetention": {"mode": "governance", "period": {"duration": 30, "unit": "days"}},
+                    "isFileLockEnabled": true
+                  }
+                },
+                "lifecycleRules": [
+                  {"daysFromHidingToDeleting": 7, "daysFromUploadingToHiding": null, "fileNamePrefix": ""}
+                ],
+                "options": ["s3"],
+                "replicationConfiguration": {
+                  "isClientAuthorizedToRead": true,
+                  "value": {
+                    "asReplicationSource": {
+                      "replicationRules": [
+                        {
+                          "destinationBucketId": "1a2b3c4d5e6f7a8b9c0d0003",
+                          "fileNamePrefix": "",
+                          "includeExistingFiles": false,
+                          "isEnabled": true,
+                          "priority": 1,
+                          "replicationRuleName": "example-replication-rule"
+                        }
+                      ],
+                      "sourceApplicationKeyId": "0040a1b2c3d4e5f0000000009"
+                    },
+                    "asReplicationDestination": null
+                  }
+                },
+                "revision": 3
+              },
+              {
+                "accountId": "0a1b2c3d4e5f",
+                "bucketId": "1a2b3c4d5e6f7a8b9c0d0002",
+                "bucketInfo": {},
+                "bucketName": "example-public-assets",
+                "bucketType": "allPublic",
+                "corsRules": [
+                  {
+                    "allowedHeaders": ["range"],
+                    "allowedOperations": ["b2_download_file_by_id", "b2_download_file_by_name"],
+                    "allowedOrigins": ["https://www.example.com"],
+                    "corsRuleName": "downloadFromExample",
+                    "exposeHeaders": ["x-bz-content-sha1"],
+                    "maxAgeSeconds": 3600
+                  }
+                ],
+                "defaultServerSideEncryption": {"isClientAuthorizedToRead": false, "value": null},
+                "fileLockConfiguration": {
+                  "isClientAuthorizedToRead": true,
+                  "value": {"defaultRetention": {"mode": null, "period": null}, "isFileLockEnabled": false}
+                },
+                "lifecycleRules": [],
+                "options": [],
+                "replicationConfiguration": {"isClientAuthorizedToRead": true, "value": null},
+                "revision": 1
+              }
+            ]
+          }
+          ` }}{{ else if eq .req_num 2 }}{{ minify_json `
+          {
+            "buckets": [
+              {
+                "accountId": "0a1b2c3d4e5f",
+                "bucketId": "1a2b3c4d5e6f7a8b9c0d0001",
+                "bucketInfo": {"environment": "production"},
+                "bucketName": "example-backups",
+                "bucketType": "allPrivate",
+                "corsRules": [],
+                "defaultServerSideEncryption": {
+                  "isClientAuthorizedToRead": true,
+                  "value": {"algorithm": "AES256", "mode": "SSE-B2"}
+                },
+                "fileLockConfiguration": {
+                  "isClientAuthorizedToRead": true,
+                  "value": {
+                    "defaultRetention": {"mode": "governance", "period": {"duration": 90, "unit": "days"}},
+                    "isFileLockEnabled": true
+                  }
+                },
+                "lifecycleRules": [
+                  {"daysFromHidingToDeleting": 7, "daysFromUploadingToHiding": null, "fileNamePrefix": ""}
+                ],
+                "options": ["s3"],
+                "replicationConfiguration": {"isClientAuthorizedToRead": true, "value": null},
+                "revision": 4
+              }
+            ]
+          }
+          ` }}{{ else }}{"buckets":[]}{{ end }}
+  # b2_list_buckets: account with no buckets.
+  - path: /b2api/v4/b2_list_buckets
+    methods: ['POST']
+    request_headers:
+      Authorization:
+        - '^4_example_token_empty$'
+    request_body: '/"accountId":"0a1b2c3d4e5f".*"bucketTypes":\["all"\]/'
+    responses:
+      - status_code: 200
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"buckets":[]}'
+  # b2_list_buckets: expired authorization token.
+  - path: /b2api/v4/b2_list_buckets
+    methods: ['POST']
+    request_headers:
+      Authorization:
+        - '^4_example_token_expired$'
+    responses:
+      - status_code: 401
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"status":401,"code":"expired_auth_token","message":"Authorization token has expired"}'
+  # b2_list_buckets: valid token but missing or wrong request body fields.
+  - path: /b2api/v4/b2_list_buckets
+    methods: ['POST']
+    request_headers:
+      Authorization:
+        - '^4_example_token(_empty)?$'
+    responses:
+      - status_code: 400
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"status":400,"code":"bad_request","message":"accountId and bucketTypes [\"all\"] are required by this mock"}'
+  # b2_list_buckets: any other token.
+  - path: /b2api/v4/b2_list_buckets
+    methods: ['POST']
+    responses:
+      - status_code: 401
+        headers:
+          Content-Type:
+            - 'application/json'
+        body: '{"status":401,"code":"bad_auth_token","message":"Invalid authorization token"}'

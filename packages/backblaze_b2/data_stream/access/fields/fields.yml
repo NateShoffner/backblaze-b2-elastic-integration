@@ -1,0 +1,51 @@
+- name: backblaze_b2.access
+  type: group
+  description: Fields from Backblaze B2 bucket access log records that have no ECS equivalent.
+  fields:
+    - name: access_point_arn
+      type: keyword
+      description: Access Point ARN of the request. Backblaze does not support access points, so this is normally empty.
+    - name: acl_required
+      type: keyword
+      description: Whether an ACL was required to authorize the request. Backblaze does not support this field, so it is normally empty.
+    - name: authentication_type
+      type: keyword
+      description: Type of request authentication used, `AuthHeader` for authentication headers or `QueryString` for query string (pre-signed URL) authentication. Empty for unauthenticated requests.
+    - name: bucket
+      type: keyword
+      description: Name of the bucket that the request was processed against.
+    - name: host_header
+      type: keyword
+      description: Endpoint used to connect to Backblaze, for example `s3.us-west-004.backblazeb2.com` or `api001.backblazeb2.com`.
+    - name: host_id
+      type: keyword
+      description: The `x-amz-id-2` or Backblaze extended request ID.
+    - name: key
+      type: keyword
+      description: Key (object or file name) part of the request. Empty if the operation does not take a key.
+    - name: object_size
+      type: long
+      unit: byte
+      description: Size of the object in question, in bytes. Empty if zero.
+    - name: request_uri
+      type: keyword
+      description: Request-URI part of the HTTP request message, kept only when it cannot be split into `http.request.method`, `url.original`, and `http.version`.
+    - name: requester
+      type: keyword
+      description: Identity of the requester, for example `identity:applicationKey:<applicationKeyId>`. Empty for unauthenticated requests.
+    - name: requester_type
+      type: keyword
+      description: Identity type parsed from the requester, for example `applicationKey`, `account`, `orguser`, `replication`, or `system`.
+    - name: signature_version
+      type: keyword
+      description: Signature version used to authenticate S3 compatible API requests, for example `SigV4`. Empty for B2 Native API requests.
+    - name: tls_version
+      type: keyword
+      description: TLS version negotiated by the client, kept only when it does not use the `TLSv<version>` form that maps to `tls.version`.
+    - name: turn_around_time
+      type: long
+      unit: ms
+      description: Number of milliseconds Backblaze spent processing the request, from the last byte of the request received to the first byte of the response sent.
+    - name: version_id
+      type: keyword
+      description: Version ID in the request, or the file ID of the file in question for B2 Native API requests.

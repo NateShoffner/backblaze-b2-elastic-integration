@@ -1,0 +1,110 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-03-02T21:24:12.000Z",
+            "backblaze_b2": {
+                "access": {
+                    "authentication_type": "AuthHeader",
+                    "bucket": "example-backups",
+                    "host_header": "api001.backblazeb2.com",
+                    "requester": "identity:applicationKey:0010123456789ab0000000001",
+                    "requester_type": "applicationKey",
+                    "turn_around_time": 24115
+                }
+            },
+            "cloud": {
+                "account": {
+                    "id": "0123456789ab"
+                },
+                "provider": "backblaze",
+                "service": {
+                    "name": "b2"
+                }
+            },
+            "ecs": {
+                "version": "9.3.0"
+            },
+            "error": {
+                "code": "service_unavailable"
+            },
+            "event": {
+                "action": "B2_API.B2_LIST_FILE_NAMES",
+                "category": [
+                    "web"
+                ],
+                "duration": 24115000000,
+                "kind": "event",
+                "original": "0123456789ab example-backups [02/Mar/2026:21:24:12 +0000] 198.51.100.23 identity:applicationKey:0010123456789ab0000000001 f28c4a6e0b3d9175 B2_API.B2_LIST_FILE_NAMES - \"POST /b2api/v1/b2_list_file_names HTTP/1.1\" 503 service_unavailable 145 - 24115 24115 \"-\" \"rclone/v1.67.0\" - - - TLS_AES_128_GCM_SHA256 AuthHeader api001.backblazeb2.com TLSv1.3 - -",
+                "outcome": "failure",
+                "type": [
+                    "access"
+                ]
+            },
+            "http": {
+                "request": {
+                    "id": "f28c4a6e0b3d9175",
+                    "method": "POST"
+                },
+                "response": {
+                    "body": {
+                        "bytes": 145
+                    },
+                    "status_code": 503
+                },
+                "version": "1.1"
+            },
+            "related": {
+                "ip": [
+                    "198.51.100.23"
+                ],
+                "user": [
+                    "0010123456789ab0000000001"
+                ]
+            },
+            "source": {
+                "as": {
+                    "number": 64501,
+                    "organization": {
+                        "name": "Documentation ASN"
+                    }
+                },
+                "geo": {
+                    "city_name": "Amsterdam",
+                    "continent_name": "Europe",
+                    "country_iso_code": "NL",
+                    "country_name": "Netherlands",
+                    "location": {
+                        "lat": 52.37404,
+                        "lon": 4.88969
+                    },
+                    "region_iso_code": "NL-NH",
+                    "region_name": "North Holland"
+                },
+                "ip": "198.51.100.23"
+            },
+            "tags": [
+                "preserve_original_event"
+            ],
+            "tls": {
+                "cipher": "TLS_AES_128_GCM_SHA256",
+                "version": "1.3",
+                "version_protocol": "tls"
+            },
+            "url": {
+                "original": "/b2api/v1/b2_list_file_names",
+                "path": "/b2api/v1/b2_list_file_names"
+            },
+            "user": {
+                "id": "0010123456789ab0000000001"
+            },
+            "user_agent": {
+                "device": {
+                    "name": "Other"
+                },
+                "name": "rclone",
+                "original": "rclone/v1.67.0",
+                "version": "1.67"
+            }
+        }
+    ]
+}

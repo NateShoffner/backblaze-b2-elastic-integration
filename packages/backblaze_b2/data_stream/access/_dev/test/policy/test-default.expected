@@ -1,0 +1,46 @@
+inputs:
+    - data_stream:
+        namespace: ep
+      meta:
+        package:
+            name: backblaze_b2
+      name: test-default-backblaze_b2
+      streams:
+        - access_key_id: "0040000000000000000000001"
+          bucket_list_interval: 5m
+          data_stream:
+            dataset: backblaze_b2.access
+          default_region: us-west-004
+          endpoint: https://s3.us-west-004.backblazeb2.com
+          non_aws_bucket_name: example-access-logs
+          number_of_workers: 5
+          processors:
+            - drop_event:
+                when:
+                    or:
+                        - contains:
+                            message: ' B2_API.B2_LIST_FILE_NAMES '
+          publisher_pipeline.disable_host: true
+          region: us-west-004
+          secret_access_key: ${SECRET_0}
+          tags:
+            - forwarded
+            - backblaze_b2-access
+      type: aws-s3
+      use_output: default
+output_permissions:
+    default:
+        _elastic_agent_checks:
+            cluster:
+                - monitor
+        _elastic_agent_monitoring:
+            indices: []
+        uuid-for-permissions-on-related-indices:
+            indices:
+                - names:
+                    - logs-backblaze_b2.access-ep
+                  privileges:
+                    - auto_configure
+                    - create_doc
+secret_references:
+    - {}
