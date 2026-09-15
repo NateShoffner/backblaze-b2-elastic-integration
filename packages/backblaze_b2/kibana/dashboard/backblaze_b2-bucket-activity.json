@@ -1,0 +1,1459 @@
+{
+    "attributes": {
+        "description": "Uploads, downloads, and deletions from Backblaze B2 access logs.",
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": {}
+        },
+        "optionsJSON": {
+            "autoApplyFilters": true,
+            "hidePanelBorders": false,
+            "hidePanelTitles": false,
+            "syncColors": false,
+            "syncCursor": true,
+            "syncTooltips": false,
+            "useMargins": true
+        },
+        "panelsJSON": [
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-3002453af4016ec4a737b802422847ab3db1310824496dc792262ec9d8a5ccb1": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-3002453af4016ec4a737b802422847ab3db1310824496dc792262ec9d8a5ccb1",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Files uploaded",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-3002453af4016ec4a737b802422847ab3db1310824496dc792262ec9d8a5ccb1",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\") | STATS `Files uploaded` = COUNT(*)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-3002453af4016ec4a737b802422847ab3db1310824496dc792262ec9d8a5ccb1",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\") | STATS `Files uploaded` = COUNT(*)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-files-uploaded",
+                    "w": 8,
+                    "x": 0,
+                    "y": 0
+                },
+                "panelIndex": "kpi-files-uploaded",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-44f037de6aaea26a64ba0a45aafd3b260d732049f94aee92a18b0f8d6c9c9852": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-44f037de6aaea26a64ba0a45aafd3b260d732049f94aee92a18b0f8d6c9c9852",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Data uploaded",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-44f037de6aaea26a64ba0a45aafd3b260d732049f94aee92a18b0f8d6c9c9852",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_UPLOAD_PART\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.PUT.PART\", \"REST.S3_UPLOAD_PART\") | STATS `Data uploaded` = SUM(backblaze_b2.access.object_size) / 1000000000.0"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-44f037de6aaea26a64ba0a45aafd3b260d732049f94aee92a18b0f8d6c9c9852",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_UPLOAD_PART\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.PUT.PART\", \"REST.S3_UPLOAD_PART\") | STATS `Data uploaded` = SUM(backblaze_b2.access.object_size) / 1000000000.0"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-data-uploaded",
+                    "w": 8,
+                    "x": 8,
+                    "y": 0
+                },
+                "panelIndex": "kpi-data-uploaded",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-a3dbe4fc345c3ce8f065b4b0ae734f5d2559f26157cf9d426afa6d4a3841b99d": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-a3dbe4fc345c3ce8f065b4b0ae734f5d2559f26157cf9d426afa6d4a3841b99d",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Downloads",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-a3dbe4fc345c3ce8f065b4b0ae734f5d2559f26157cf9d426afa6d4a3841b99d",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\" | STATS Downloads = COUNT(*)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-a3dbe4fc345c3ce8f065b4b0ae734f5d2559f26157cf9d426afa6d4a3841b99d",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\" | STATS Downloads = COUNT(*)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-downloads",
+                    "w": 8,
+                    "x": 16,
+                    "y": 0
+                },
+                "panelIndex": "kpi-downloads",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-8ec5dbc7678bec7f9222f4a9a6d8f5e5897af980d82c524a4596a1a39fb0064f": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-8ec5dbc7678bec7f9222f4a9a6d8f5e5897af980d82c524a4596a1a39fb0064f",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Deletions",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-8ec5dbc7678bec7f9222f4a9a6d8f5e5897af980d82c524a4596a1a39fb0064f",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND (event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\") | STATS Deletions = COUNT(*)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-8ec5dbc7678bec7f9222f4a9a6d8f5e5897af980d82c524a4596a1a39fb0064f",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND (event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\") | STATS Deletions = COUNT(*)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-deletions",
+                    "w": 8,
+                    "x": 24,
+                    "y": 0
+                },
+                "panelIndex": "kpi-deletions",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-75f0751263ad071bd4bcb5b442c13eb5fe9bf4bd0286b5b05738ceee6e27c93b": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-75f0751263ad071bd4bcb5b442c13eb5fe9bf4bd0286b5b05738ceee6e27c93b",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Failed requests",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-75f0751263ad071bd4bcb5b442c13eb5fe9bf4bd0286b5b05738ceee6e27c93b",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.outcome == \"failure\" | STATS `Failed requests` = COUNT(*)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-75f0751263ad071bd4bcb5b442c13eb5fe9bf4bd0286b5b05738ceee6e27c93b",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.outcome == \"failure\" | STATS `Failed requests` = COUNT(*)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-failed-requests",
+                    "w": 8,
+                    "x": 32,
+                    "y": 0
+                },
+                "panelIndex": "kpi-failed-requests",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-67189d0a64e9a2126bbbba48867731daeb5dbefa2a049978cc4c8c5a2255ec1e": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-67189d0a64e9a2126bbbba48867731daeb5dbefa2a049978cc4c8c5a2255ec1e",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Application keys used",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-67189d0a64e9a2126bbbba48867731daeb5dbefa2a049978cc4c8c5a2255ec1e",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" | STATS `Application keys used` = COUNT_DISTINCT(user.id)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-67189d0a64e9a2126bbbba48867731daeb5dbefa2a049978cc4c8c5a2255ec1e",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" | STATS `Application keys used` = COUNT_DISTINCT(user.id)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-application-keys",
+                    "w": 8,
+                    "x": 40,
+                    "y": 0
+                },
+                "panelIndex": "kpi-application-keys",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-@timestamp": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-@timestamp",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "timeFieldName": "@timestamp",
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "bar_stacked_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "bar_stacked_x",
+                                                    "customLabel": true,
+                                                    "fieldName": "BUCKET(@timestamp, 50, ?_tstart, ?_tend)",
+                                                    "label": "@timestamp",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_stacked_y_0",
+                                                    "fieldName": "Events",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_stacked_breakdown",
+                                                    "fieldName": "Activity",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-@timestamp",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND @timestamp \u003c= ?_tend AND @timestamp \u003e ?_tstart | EVAL Activity = CASE(event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\"), \"Upload\", event.action IN (\"B2_API.B2_COPY_FILE\", \"REST.S3_COPY_OBJECT\"), \"Server-side copy\", http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\", \"Download\", event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\", \"Delete\", \"Other\") | WHERE Activity != \"Other\" | STATS Events = COUNT(*) BY BUCKET(@timestamp, 50, ?_tstart, ?_tend), Activity"
+                                            },
+                                            "timeField": "@timestamp"
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-@timestamp",
+                                    "name": "indexpattern-datasource-layer-bar_stacked_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND @timestamp \u003c= ?_tend AND @timestamp \u003e ?_tstart | EVAL Activity = CASE(event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\"), \"Upload\", event.action IN (\"B2_API.B2_COPY_FILE\", \"REST.S3_COPY_OBJECT\"), \"Server-side copy\", http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\", \"Download\", event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\", \"Delete\", \"Other\") | WHERE Activity != \"Other\" | STATS Events = COUNT(*) BY BUCKET(@timestamp, 50, ?_tstart, ?_tend), Activity"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "bar_stacked_y_0"
+                                        ],
+                                        "layerId": "bar_stacked_0",
+                                        "layerType": "data",
+                                        "seriesType": "bar_stacked",
+                                        "splitAccessors": [
+                                            "bar_stacked_breakdown"
+                                        ],
+                                        "xAccessor": "bar_stacked_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_stacked_y_0"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar_stacked",
+                                "xExtent": {
+                                    "mode": "dataBounds",
+                                    "niceValues": false
+                                }
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "File activity over time"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "file-activity-over-time",
+                    "w": 32,
+                    "x": 0,
+                    "y": 5
+                },
+                "panelIndex": "file-activity-over-time",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-328b73604f9bf72e8be8eef37600009113ddae00329edf265c4ffca069d0c162": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-328b73604f9bf72e8be8eef37600009113ddae00329edf265c4ffca069d0c162",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "bar_horizontal_stacked_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "bar_horizontal_stacked_x",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_horizontal_stacked_y_0",
+                                                    "fieldName": "Events",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_horizontal_stacked_breakdown",
+                                                    "fieldName": "Activity",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-328b73604f9bf72e8be8eef37600009113ddae00329edf265c4ffca069d0c162",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" | EVAL Activity = CASE(event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\"), \"Upload\", event.action IN (\"B2_API.B2_COPY_FILE\", \"REST.S3_COPY_OBJECT\"), \"Server-side copy\", http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\", \"Download\", event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\", \"Delete\", \"Other\") | WHERE Activity != \"Other\" | STATS Events = COUNT(*) BY Bucket = backblaze_b2.access.bucket, Activity | SORT Events DESC | LIMIT 40"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-328b73604f9bf72e8be8eef37600009113ddae00329edf265c4ffca069d0c162",
+                                    "name": "indexpattern-datasource-layer-bar_horizontal_stacked_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" | EVAL Activity = CASE(event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\"), \"Upload\", event.action IN (\"B2_API.B2_COPY_FILE\", \"REST.S3_COPY_OBJECT\"), \"Server-side copy\", http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\", \"Download\", event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\", \"Delete\", \"Other\") | WHERE Activity != \"Other\" | STATS Events = COUNT(*) BY Bucket = backblaze_b2.access.bucket, Activity | SORT Events DESC | LIMIT 40"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "bar_horizontal_stacked_y_0"
+                                        ],
+                                        "layerId": "bar_horizontal_stacked_0",
+                                        "layerType": "data",
+                                        "seriesType": "bar_horizontal_stacked",
+                                        "splitAccessors": [
+                                            "bar_horizontal_stacked_breakdown"
+                                        ],
+                                        "xAccessor": "bar_horizontal_stacked_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_horizontal_stacked_y_0"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar_horizontal_stacked"
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "File activity by bucket"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "file-activity-by-bucket",
+                    "w": 16,
+                    "x": 32,
+                    "y": 5
+                },
+                "panelIndex": "file-activity-by-bucket",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-1b0910c8c4a75dc60a025e26c43e3a82377848204fae7d328d8ad0222c3849d1": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-1b0910c8c4a75dc60a025e26c43e3a82377848204fae7d328d8ad0222c3849d1",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Requester type",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_1",
+                                                    "fieldName": "Key ID",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Requests",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_1",
+                                                    "fieldName": "Uploads",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_2",
+                                                    "fieldName": "Downloads",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_3",
+                                                    "fieldName": "Deletions",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_4",
+                                                    "fieldName": "Buckets",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_5",
+                                                    "fieldName": "Client IPs",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-1b0910c8c4a75dc60a025e26c43e3a82377848204fae7d328d8ad0222c3849d1",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" | EVAL Activity = CASE(event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\"), \"Upload\", http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\", \"Download\", event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\", \"Delete\", \"Other\") | STATS Requests = COUNT(*), Uploads = COUNT(CASE(Activity == \"Upload\", 1, null)), Downloads = COUNT(CASE(Activity == \"Download\", 1, null)), Deletions = COUNT(CASE(Activity == \"Delete\", 1, null)), Buckets = COUNT_DISTINCT(backblaze_b2.access.bucket), `Client IPs` = COUNT_DISTINCT(source.ip) BY `Requester type` = backblaze_b2.access.requester_type, `Key ID` = user.id | SORT Requests DESC | LIMIT 50"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-1b0910c8c4a75dc60a025e26c43e3a82377848204fae7d328d8ad0222c3849d1",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" | EVAL Activity = CASE(event.action IN (\"B2_API.B2_UPLOAD_FILE\", \"B2_API.B2_FINISH_LARGE_FILE\", \"REST.PUT.OBJECT\", \"REST.S3_PUT_OBJECT\", \"REST.S3_COMPLETE_MULTIPART_UPLOAD\"), \"Upload\", http.request.method == \"GET\" AND (event.action LIKE \"*DOWNLOAD*\" OR event.action IN (\"REST.GET.OBJECT\", \"REST.S3_GET_OBJECT\")) AND event.action NOT LIKE \"*.COPY\", \"Download\", event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\", \"Delete\", \"Other\") | STATS Requests = COUNT(*), Uploads = COUNT(CASE(Activity == \"Upload\", 1, null)), Downloads = COUNT(CASE(Activity == \"Download\", 1, null)), Deletions = COUNT(CASE(Activity == \"Delete\", 1, null)), Buckets = COUNT_DISTINCT(backblaze_b2.access.bucket), `Client IPs` = COUNT_DISTINCT(source.ip) BY `Requester type` = backblaze_b2.access.requester_type, `Key ID` = user.id | SORT Requests DESC | LIMIT 50"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_1",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_1",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_2",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_3",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_4",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_5",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "layer_0",
+                                "layerType": "data"
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "title": "Activity by credential"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "activity-by-credential-table",
+                    "w": 24,
+                    "x": 0,
+                    "y": 16
+                },
+                "panelIndex": "activity-by-credential-table",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-7f8cd1c126822f4e8981887fb7bc6cb232200439c429c722f72e41c43cab19ae": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-7f8cd1c126822f4e8981887fb7bc6cb232200439c429c722f72e41c43cab19ae",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Client IP",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_1",
+                                                    "fieldName": "Network",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_2",
+                                                    "fieldName": "Country",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_3",
+                                                    "fieldName": "Client",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Requests",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_1",
+                                                    "fieldName": "Buckets",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-7f8cd1c126822f4e8981887fb7bc6cb232200439c429c722f72e41c43cab19ae",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND source.ip IS NOT NULL | STATS Requests = COUNT(*), Buckets = COUNT_DISTINCT(backblaze_b2.access.bucket) BY `Client IP` = source.ip, Network = source.as.organization.name, Country = source.geo.country_iso_code, Client = user_agent.name | SORT Requests DESC | LIMIT 50"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-7f8cd1c126822f4e8981887fb7bc6cb232200439c429c722f72e41c43cab19ae",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND source.ip IS NOT NULL | STATS Requests = COUNT(*), Buckets = COUNT_DISTINCT(backblaze_b2.access.bucket) BY `Client IP` = source.ip, Network = source.as.organization.name, Country = source.geo.country_iso_code, Client = user_agent.name | SORT Requests DESC | LIMIT 50"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_1",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_2",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_3",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_1",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "layer_0",
+                                "layerType": "data"
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "title": "Clients"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "clients-table",
+                    "w": 24,
+                    "x": 24,
+                    "y": 16
+                },
+                "panelIndex": "clients-table",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-5fa94fb03bfcf86c1085317c03b071acfd0c38adcb576781c9e0f158ee4cfec3": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-5fa94fb03bfcf86c1085317c03b071acfd0c38adcb576781c9e0f158ee4cfec3",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Time",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_1",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_2",
+                                                    "fieldName": "File",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_3",
+                                                    "fieldName": "Operation",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_4",
+                                                    "fieldName": "Requester",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_5",
+                                                    "fieldName": "Key ID",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Size",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "bytes",
+                                                            "params": {
+                                                                "decimals": 1
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-5fa94fb03bfcf86c1085317c03b071acfd0c38adcb576781c9e0f158ee4cfec3",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND (event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\") | SORT @timestamp DESC | LIMIT 100 | EVAL Time = @timestamp | KEEP Time, backblaze_b2.access.bucket, backblaze_b2.access.key, event.action, backblaze_b2.access.requester_type, user.id, backblaze_b2.access.object_size | RENAME backblaze_b2.access.bucket AS Bucket, backblaze_b2.access.key AS File, event.action AS Operation, backblaze_b2.access.requester_type AS Requester, user.id AS `Key ID`, backblaze_b2.access.object_size AS Size"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-5fa94fb03bfcf86c1085317c03b071acfd0c38adcb576781c9e0f158ee4cfec3",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND (event.action LIKE \"*DELETE*\" OR event.action LIKE \"*HIDE*\") | SORT @timestamp DESC | LIMIT 100 | EVAL Time = @timestamp | KEEP Time, backblaze_b2.access.bucket, backblaze_b2.access.key, event.action, backblaze_b2.access.requester_type, user.id, backblaze_b2.access.object_size | RENAME backblaze_b2.access.bucket AS Bucket, backblaze_b2.access.key AS File, event.action AS Operation, backblaze_b2.access.requester_type AS Requester, user.id AS `Key ID`, backblaze_b2.access.object_size AS Size"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_1",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_2",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_3",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_4",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_5",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "layer_0",
+                                "layerType": "data"
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "title": "Recent deletions"
+                },
+                "gridData": {
+                    "h": 12,
+                    "i": "recent-deletions-table",
+                    "w": 24,
+                    "x": 0,
+                    "y": 27
+                },
+                "panelIndex": "recent-deletions-table",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.access-*-57fc161efe4524e3ed04a1c5f2b4f1014709e35197b3d2aeddf74a797bbe07b4": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.access-*-57fc161efe4524e3ed04a1c5f2b4f1014709e35197b3d2aeddf74a797bbe07b4",
+                                    "name": "logs-backblaze_b2.access-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.access-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Operation",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_1",
+                                                    "fieldName": "Status",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_2",
+                                                    "fieldName": "Error code",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_3",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Requests",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.access-*-57fc161efe4524e3ed04a1c5f2b4f1014709e35197b3d2aeddf74a797bbe07b4",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.outcome == \"failure\" | STATS Requests = COUNT(*) BY Operation = event.action, Status = http.response.status_code, `Error code` = error.code, Bucket = backblaze_b2.access.bucket | SORT Requests DESC | LIMIT 50"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.access-*-57fc161efe4524e3ed04a1c5f2b4f1014709e35197b3d2aeddf74a797bbe07b4",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.access-* | WHERE data_stream.dataset == \"backblaze_b2.access\" AND event.outcome == \"failure\" | STATS Requests = COUNT(*) BY Operation = event.action, Status = http.response.status_code, `Error code` = error.code, Bucket = backblaze_b2.access.bucket | SORT Requests DESC | LIMIT 50"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_1",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_2",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_3",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "layer_0",
+                                "layerType": "data"
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "title": "Failed requests"
+                },
+                "gridData": {
+                    "h": 12,
+                    "i": "failed-requests-table",
+                    "w": 24,
+                    "x": 24,
+                    "y": 27
+                },
+                "panelIndex": "failed-requests-table",
+                "type": "vis"
+            }
+        ],
+        "timeFrom": "now-7d",
+        "timeRestore": true,
+        "timeTo": "now",
+        "title": "[Logs Backblaze B2] Bucket activity"
+    },
+    "coreMigrationVersion": "8.8.0",
+    "created_at": "2026-09-15T07:27:02.780Z",
+    "id": "backblaze_b2-bucket-activity",
+    "references": [],
+    "type": "dashboard",
+    "typeMigrationVersion": "10.3.0"
+}

@@ -8,7 +8,7 @@ The Backblaze B2 integration for Elastic collects bucket access logs, daily usag
 
 ### Compatibility
 
-This integration uses the Backblaze B2 S3-compatible API and the B2 Native API.
+This integration uses the Backblaze B2 S3-compatible API and the B2 Native API. It requires Kibana 9.4 or later, because its dashboards use ES|QL panels in the Kibana 9.4 dashboard format.
 
 ### How it works
 
@@ -75,6 +75,10 @@ Elastic Agent is required to read data from Backblaze B2 and ship the data to El
 1. In Kibana, open **Discover**.
 2. Filter on `data_stream.dataset` with one of `backblaze_b2.access`, `backblaze_b2.usage`, or `backblaze_b2.bucket`.
 3. Confirm that events are arriving. Access logs can take several hours to appear after requests are made.
+4. Open the dashboards:
+   - **[Logs Backblaze B2] Storage usage and costs**: daily storage, transfer, and estimated cost. Costs use $6.95 per TB-month.
+   - **[Logs Backblaze B2] Bucket activity**: uploads, downloads, and deletions.
+   - **[Logs Backblaze B2] Bucket inventory**: current settings for each bucket.
 
 ## Troubleshooting
 

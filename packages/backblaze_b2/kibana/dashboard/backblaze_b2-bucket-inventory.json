@@ -1,0 +1,837 @@
+{
+    "attributes": {
+        "description": "Current settings for each Backblaze B2 bucket.",
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": {}
+        },
+        "optionsJSON": {
+            "autoApplyFilters": true,
+            "hidePanelBorders": false,
+            "hidePanelTitles": false,
+            "syncColors": false,
+            "syncCursor": true,
+            "syncTooltips": false,
+            "useMargins": true
+        },
+        "panelsJSON": [
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.bucket-*-38d5f4c1d6a330fd9b344cf93b5966cdf9cff02bc3cf45204ce9e03eb6104649": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.bucket-*-38d5f4c1d6a330fd9b344cf93b5966cdf9cff02bc3cf45204ce9e03eb6104649",
+                                    "name": "logs-backblaze_b2.bucket-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.bucket-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Buckets",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.bucket-*-38d5f4c1d6a330fd9b344cf93b5966cdf9cff02bc3cf45204ce9e03eb6104649",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS Buckets = COUNT_DISTINCT(entity.id)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.bucket-*-38d5f4c1d6a330fd9b344cf93b5966cdf9cff02bc3cf45204ce9e03eb6104649",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS Buckets = COUNT_DISTINCT(entity.id)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-buckets",
+                    "w": 12,
+                    "x": 0,
+                    "y": 0
+                },
+                "panelIndex": "kpi-buckets",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.bucket-*-67cb76b380132ea3b6480f1b055f21dde409ffe7ddfed54b779eab292bfbf7f2": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.bucket-*-67cb76b380132ea3b6480f1b055f21dde409ffe7ddfed54b779eab292bfbf7f2",
+                                    "name": "logs-backblaze_b2.bucket-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.bucket-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Public buckets",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.bucket-*-67cb76b380132ea3b6480f1b055f21dde409ffe7ddfed54b779eab292bfbf7f2",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS `Public buckets` = COUNT_DISTINCT(CASE(backblaze_b2.bucket.is_public == true, entity.id, null))"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.bucket-*-67cb76b380132ea3b6480f1b055f21dde409ffe7ddfed54b779eab292bfbf7f2",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS `Public buckets` = COUNT_DISTINCT(CASE(backblaze_b2.bucket.is_public == true, entity.id, null))"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-public-buckets",
+                    "w": 12,
+                    "x": 12,
+                    "y": 0
+                },
+                "panelIndex": "kpi-public-buckets",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.bucket-*-68961bd666279e0b5499d1c3224bd46344274e16c3078131c3cdddbed1e7d34f": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.bucket-*-68961bd666279e0b5499d1c3224bd46344274e16c3078131c3cdddbed1e7d34f",
+                                    "name": "logs-backblaze_b2.bucket-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.bucket-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Without default encryption",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.bucket-*-68961bd666279e0b5499d1c3224bd46344274e16c3078131c3cdddbed1e7d34f",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS `Without default encryption` = COUNT_DISTINCT(CASE(backblaze_b2.bucket.default_server_side_encryption.is_enabled == false, entity.id, null))"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.bucket-*-68961bd666279e0b5499d1c3224bd46344274e16c3078131c3cdddbed1e7d34f",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS `Without default encryption` = COUNT_DISTINCT(CASE(backblaze_b2.bucket.default_server_side_encryption.is_enabled == false, entity.id, null))"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-no-default-encryption",
+                    "w": 12,
+                    "x": 24,
+                    "y": 0
+                },
+                "panelIndex": "kpi-no-default-encryption",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.bucket-*-1276200d1ea25a7af057e4c2170873b5332f9b45c1a879beec2ee85188ac1661": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.bucket-*-1276200d1ea25a7af057e4c2170873b5332f9b45c1a879beec2ee85188ac1661",
+                                    "name": "logs-backblaze_b2.bucket-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.bucket-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Without Object Lock",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.bucket-*-1276200d1ea25a7af057e4c2170873b5332f9b45c1a879beec2ee85188ac1661",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS `Without Object Lock` = COUNT_DISTINCT(CASE(backblaze_b2.bucket.file_lock_configuration.is_file_lock_enabled == false, entity.id, null))"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.bucket-*-1276200d1ea25a7af057e4c2170873b5332f9b45c1a879beec2ee85188ac1661",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS `Without Object Lock` = COUNT_DISTINCT(CASE(backblaze_b2.bucket.file_lock_configuration.is_file_lock_enabled == false, entity.id, null))"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-no-object-lock",
+                    "w": 12,
+                    "x": 36,
+                    "y": 0
+                },
+                "panelIndex": "kpi-no-object-lock",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.bucket-*-e2e2eaab84c97ff05d5e2424503d85f8b46ff31b00bc1d38404b443edd8cfc53": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.bucket-*-e2e2eaab84c97ff05d5e2424503d85f8b46ff31b00bc1d38404b443edd8cfc53",
+                                    "name": "logs-backblaze_b2.bucket-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.bucket-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_1",
+                                                    "fieldName": "Type",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_2",
+                                                    "fieldName": "Public",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_3",
+                                                    "fieldName": "Encryption",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_4",
+                                                    "fieldName": "Object Lock",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_5",
+                                                    "fieldName": "Default retention",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_6",
+                                                    "fieldName": "Replication",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_7",
+                                                    "fieldName": "Last seen",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Lifecycle rules",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_1",
+                                                    "fieldName": "Revision",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.bucket-*-e2e2eaab84c97ff05d5e2424503d85f8b46ff31b00bc1d38404b443edd8cfc53",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | EVAL Encryption = CASE(backblaze_b2.bucket.default_server_side_encryption.is_client_authorized_to_read == false, \"not readable\", backblaze_b2.bucket.default_server_side_encryption.is_enabled == true, COALESCE(backblaze_b2.bucket.default_server_side_encryption.mode, \"enabled\"), \"none\"), `Object Lock` = CASE(backblaze_b2.bucket.file_lock_configuration.is_client_authorized_to_read == false, \"not readable\", backblaze_b2.bucket.file_lock_configuration.is_file_lock_enabled == true, \"enabled\", \"disabled\"), `Default retention` = CONCAT(backblaze_b2.bucket.file_lock_configuration.default_retention.mode, \" \", TO_STRING(backblaze_b2.bucket.file_lock_configuration.default_retention.period.duration), \" \", backblaze_b2.bucket.file_lock_configuration.default_retention.period.unit), Replication = CASE(backblaze_b2.bucket.replication_configuration.is_client_authorized_to_read == false, \"not readable\", backblaze_b2.bucket.replication_configuration.is_replication_source == true AND backblaze_b2.bucket.replication_configuration.is_replication_destination == true, \"source and destination\", backblaze_b2.bucket.replication_configuration.is_replication_source == true, \"source\", backblaze_b2.bucket.replication_configuration.is_replication_destination == true, \"destination\", \"none\"), `Last seen` = @timestamp | KEEP entity.name, backblaze_b2.bucket.bucket_type, backblaze_b2.bucket.is_public, Encryption, `Object Lock`, `Default retention`, Replication, backblaze_b2.bucket.lifecycle_rules_count, backblaze_b2.bucket.revision, `Last seen` | RENAME entity.name AS Bucket, backblaze_b2.bucket.bucket_type AS Type, backblaze_b2.bucket.is_public AS Public, backblaze_b2.bucket.lifecycle_rules_count AS `Lifecycle rules`, backblaze_b2.bucket.revision AS Revision | SORT Bucket"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.bucket-*-e2e2eaab84c97ff05d5e2424503d85f8b46ff31b00bc1d38404b443edd8cfc53",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | EVAL Encryption = CASE(backblaze_b2.bucket.default_server_side_encryption.is_client_authorized_to_read == false, \"not readable\", backblaze_b2.bucket.default_server_side_encryption.is_enabled == true, COALESCE(backblaze_b2.bucket.default_server_side_encryption.mode, \"enabled\"), \"none\"), `Object Lock` = CASE(backblaze_b2.bucket.file_lock_configuration.is_client_authorized_to_read == false, \"not readable\", backblaze_b2.bucket.file_lock_configuration.is_file_lock_enabled == true, \"enabled\", \"disabled\"), `Default retention` = CONCAT(backblaze_b2.bucket.file_lock_configuration.default_retention.mode, \" \", TO_STRING(backblaze_b2.bucket.file_lock_configuration.default_retention.period.duration), \" \", backblaze_b2.bucket.file_lock_configuration.default_retention.period.unit), Replication = CASE(backblaze_b2.bucket.replication_configuration.is_client_authorized_to_read == false, \"not readable\", backblaze_b2.bucket.replication_configuration.is_replication_source == true AND backblaze_b2.bucket.replication_configuration.is_replication_destination == true, \"source and destination\", backblaze_b2.bucket.replication_configuration.is_replication_source == true, \"source\", backblaze_b2.bucket.replication_configuration.is_replication_destination == true, \"destination\", \"none\"), `Last seen` = @timestamp | KEEP entity.name, backblaze_b2.bucket.bucket_type, backblaze_b2.bucket.is_public, Encryption, `Object Lock`, `Default retention`, Replication, backblaze_b2.bucket.lifecycle_rules_count, backblaze_b2.bucket.revision, `Last seen` | RENAME entity.name AS Bucket, backblaze_b2.bucket.bucket_type AS Type, backblaze_b2.bucket.is_public AS Public, backblaze_b2.bucket.lifecycle_rules_count AS `Lifecycle rules`, backblaze_b2.bucket.revision AS Revision | SORT Bucket"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_1",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_2",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_3",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_4",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_5",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_6",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_7",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_1",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "layer_0",
+                                "layerType": "data"
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "title": "Bucket configuration (latest snapshot)"
+                },
+                "gridData": {
+                    "h": 14,
+                    "i": "bucket-configuration-table",
+                    "w": 48,
+                    "x": 0,
+                    "y": 5
+                },
+                "panelIndex": "bucket-configuration-table",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.bucket-*-aa2dcf00024fe5960db1ae5f3894e60ffe0ca68293931fa6cf1212f67ab342dd": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.bucket-*-aa2dcf00024fe5960db1ae5f3894e60ffe0ca68293931fa6cf1212f67ab342dd",
+                                    "name": "logs-backblaze_b2.bucket-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.bucket-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "bar_horizontal_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "bar_horizontal_x",
+                                                    "fieldName": "Type",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_horizontal_y_0",
+                                                    "fieldName": "Buckets",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.bucket-*-aa2dcf00024fe5960db1ae5f3894e60ffe0ca68293931fa6cf1212f67ab342dd",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS Buckets = COUNT_DISTINCT(entity.id) BY Type = backblaze_b2.bucket.bucket_type | SORT Buckets DESC"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.bucket-*-aa2dcf00024fe5960db1ae5f3894e60ffe0ca68293931fa6cf1212f67ab342dd",
+                                    "name": "indexpattern-datasource-layer-bar_horizontal_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | INLINE STATS latest = MAX(@timestamp) BY entity.id | WHERE @timestamp == latest | STATS Buckets = COUNT_DISTINCT(entity.id) BY Type = backblaze_b2.bucket.bucket_type | SORT Buckets DESC"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "bar_horizontal_y_0"
+                                        ],
+                                        "layerId": "bar_horizontal_0",
+                                        "layerType": "data",
+                                        "seriesType": "bar_horizontal",
+                                        "xAccessor": "bar_horizontal_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_horizontal_y_0"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar_horizontal"
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "Buckets by type"
+                },
+                "gridData": {
+                    "h": 10,
+                    "i": "buckets-by-type",
+                    "w": 24,
+                    "x": 0,
+                    "y": 19
+                },
+                "panelIndex": "buckets-by-type",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.bucket-*-6690f11d2d8c13c32b97933da93d4a766f68fe82314e7ee329bad5f59628f228": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.bucket-*-6690f11d2d8c13c32b97933da93d4a766f68fe82314e7ee329bad5f59628f228",
+                                    "name": "logs-backblaze_b2.bucket-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.bucket-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_1",
+                                                    "fieldName": "Last seen",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Changes",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_1",
+                                                    "fieldName": "First revision",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_2",
+                                                    "fieldName": "Latest revision",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.bucket-*-6690f11d2d8c13c32b97933da93d4a766f68fe82314e7ee329bad5f59628f228",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | STATS Changes = COUNT_DISTINCT(backblaze_b2.bucket.revision) - 1, `First revision` = MIN(backblaze_b2.bucket.revision), `Latest revision` = MAX(backblaze_b2.bucket.revision), `Last seen` = MAX(@timestamp) BY Bucket = entity.name | WHERE Changes \u003e 0 | SORT Changes DESC"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.bucket-*-6690f11d2d8c13c32b97933da93d4a766f68fe82314e7ee329bad5f59628f228",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.bucket-* | WHERE data_stream.dataset == \"backblaze_b2.bucket\" AND event.kind == \"asset\" | STATS Changes = COUNT_DISTINCT(backblaze_b2.bucket.revision) - 1, `First revision` = MIN(backblaze_b2.bucket.revision), `Latest revision` = MAX(backblaze_b2.bucket.revision), `Last seen` = MAX(@timestamp) BY Bucket = entity.name | WHERE Changes \u003e 0 | SORT Changes DESC"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_1",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_1",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_2",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "layer_0",
+                                "layerType": "data"
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "title": "Configuration changes"
+                },
+                "gridData": {
+                    "h": 10,
+                    "i": "configuration-changes-table",
+                    "w": 24,
+                    "x": 24,
+                    "y": 19
+                },
+                "panelIndex": "configuration-changes-table",
+                "type": "vis"
+            }
+        ],
+        "timeFrom": "now-24h",
+        "timeRestore": true,
+        "timeTo": "now",
+        "title": "[Logs Backblaze B2] Bucket inventory"
+    },
+    "coreMigrationVersion": "8.8.0",
+    "created_at": "2026-09-15T07:27:02.999Z",
+    "id": "backblaze_b2-bucket-inventory",
+    "references": [],
+    "type": "dashboard",
+    "typeMigrationVersion": "10.3.0"
+}

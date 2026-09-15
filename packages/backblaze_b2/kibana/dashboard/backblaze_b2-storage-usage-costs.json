@@ -1,0 +1,1454 @@
+{
+    "attributes": {
+        "description": "Daily storage, transfer, and estimated cost from Backblaze B2 usage reports.",
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": {}
+        },
+        "optionsJSON": {
+            "autoApplyFilters": true,
+            "hidePanelBorders": false,
+            "hidePanelTitles": false,
+            "syncColors": false,
+            "syncCursor": true,
+            "syncTooltips": false,
+            "useMargins": true
+        },
+        "panelsJSON": [
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Stored (latest day)",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | WHERE @timestamp == latest_day | STATS `Stored (latest day)` = SUM(backblaze_b2.usage.stored_gb)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | WHERE @timestamp == latest_day | STATS `Stored (latest day)` = SUM(backblaze_b2.usage.stored_gb)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-stored-latest",
+                    "w": 8,
+                    "x": 0,
+                    "y": 0
+                },
+                "panelIndex": "kpi-stored-latest",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Est. storage cost / month",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "custom",
+                                                            "params": {
+                                                                "decimals": 2,
+                                                                "pattern": "$0,0.00"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp) | EVAL `Est. storage cost / month` = GREATEST(gb_days / days - 10.0, 0.0) * 6.95 / 1000.0 | KEEP `Est. storage cost / month`"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp) | EVAL `Est. storage cost / month` = GREATEST(gb_days / days - 10.0, 0.0) * 6.95 / 1000.0 | KEEP `Est. storage cost / month`"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-storage-cost-month",
+                    "w": 8,
+                    "x": 8,
+                    "y": 0
+                },
+                "panelIndex": "kpi-storage-cost-month",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-2281eafe86dcc6dad36711ab682b6826610a9e06ba52696138884eb320ae2078": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-2281eafe86dcc6dad36711ab682b6826610a9e06ba52696138884eb320ae2078",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Uploaded",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-2281eafe86dcc6dad36711ab682b6826610a9e06ba52696138884eb320ae2078",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Uploaded` = SUM(backblaze_b2.usage.uploaded_gb)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-2281eafe86dcc6dad36711ab682b6826610a9e06ba52696138884eb320ae2078",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Uploaded` = SUM(backblaze_b2.usage.uploaded_gb)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-uploaded",
+                    "w": 8,
+                    "x": 16,
+                    "y": 0
+                },
+                "panelIndex": "kpi-uploaded",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Deleted",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Deleted` = SUM(backblaze_b2.usage.deleted_gb)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Deleted` = SUM(backblaze_b2.usage.deleted_gb)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-deleted",
+                    "w": 8,
+                    "x": 24,
+                    "y": 0
+                },
+                "panelIndex": "kpi-deleted",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-0017e70b95414a058805020cd7720916cc80cc9e4d8b52906050f8d0a10dcc3a": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-0017e70b95414a058805020cd7720916cc80cc9e4d8b52906050f8d0a10dcc3a",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Downloaded",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-0017e70b95414a058805020cd7720916cc80cc9e4d8b52906050f8d0a10dcc3a",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Downloaded` = SUM(backblaze_b2.usage.downloaded_gb)"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-0017e70b95414a058805020cd7720916cc80cc9e4d8b52906050f8d0a10dcc3a",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Downloaded` = SUM(backblaze_b2.usage.downloaded_gb)"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-downloaded",
+                    "w": 8,
+                    "x": 32,
+                    "y": 0
+                },
+                "panelIndex": "kpi-downloaded",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Free egress used",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "percent",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, downloaded = SUM(backblaze_b2.usage.downloaded_gb) | EVAL `Free egress used` = downloaded / (gb_days * 3.0 / 30.0) | KEEP `Free egress used`"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, downloaded = SUM(backblaze_b2.usage.downloaded_gb) | EVAL `Free egress used` = downloaded / (gb_days * 3.0 / 30.0) | KEEP `Free egress used`"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-free-egress-used",
+                    "w": 8,
+                    "x": 40,
+                    "y": 0
+                },
+                "panelIndex": "kpi-free-egress-used",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-31827181c60307fbfc6b2134169110de9c8f321334892c1eceb5e81e9ff84a4b": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-31827181c60307fbfc6b2134169110de9c8f321334892c1eceb5e81e9ff84a4b",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "area_stacked_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "area_stacked_x",
+                                                    "customLabel": true,
+                                                    "fieldName": "day",
+                                                    "label": "Day",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "area_stacked_y_0",
+                                                    "customLabel": true,
+                                                    "fieldName": "stored_gb",
+                                                    "label": "Stored",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "area_stacked_breakdown",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-31827181c60307fbfc6b2134169110de9c8f321334892c1eceb5e81e9ff84a4b",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | STATS stored_gb = SUM(backblaze_b2.usage.stored_gb) BY day = DATE_TRUNC(1 day, @timestamp), Bucket = entity.name | SORT day"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-31827181c60307fbfc6b2134169110de9c8f321334892c1eceb5e81e9ff84a4b",
+                                    "name": "indexpattern-datasource-layer-area_stacked_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | STATS stored_gb = SUM(backblaze_b2.usage.stored_gb) BY day = DATE_TRUNC(1 day, @timestamp), Bucket = entity.name | SORT day"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "area_stacked_y_0"
+                                        ],
+                                        "layerId": "area_stacked_0",
+                                        "layerType": "data",
+                                        "seriesType": "area_stacked",
+                                        "splitAccessors": [
+                                            "area_stacked_breakdown"
+                                        ],
+                                        "xAccessor": "area_stacked_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "area_stacked_y_0"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "area_stacked",
+                                "xExtent": {
+                                    "mode": "dataBounds",
+                                    "niceValues": false
+                                }
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "Stored data per day by bucket"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "stored-per-day-by-bucket",
+                    "w": 32,
+                    "x": 0,
+                    "y": 5
+                },
+                "panelIndex": "stored-per-day-by-bucket",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "bar_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "bar_x",
+                                                    "customLabel": true,
+                                                    "fieldName": "day",
+                                                    "label": "Day",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_y_0",
+                                                    "customLabel": true,
+                                                    "fieldName": "cost",
+                                                    "label": "Est. cost",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "custom",
+                                                            "params": {
+                                                                "decimals": 2,
+                                                                "pattern": "$0,0.00"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS cost = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 * 6.95 / 1000.0 / 30.44 BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5",
+                                    "name": "indexpattern-datasource-layer-bar_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS cost = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 * 6.95 / 1000.0 / 30.44 BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "bar_y_0"
+                                        ],
+                                        "layerId": "bar_0",
+                                        "layerType": "data",
+                                        "seriesType": "bar",
+                                        "xAccessor": "bar_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_y_0"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar",
+                                "xExtent": {
+                                    "mode": "dataBounds",
+                                    "niceValues": false
+                                }
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "Est. storage cost per day"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "storage-cost-per-day",
+                    "w": 16,
+                    "x": 32,
+                    "y": 5
+                },
+                "panelIndex": "storage-cost-per-day",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-38b151ce0b03246854785b22bb5db7a2c66b01cad2780bdfdcb8446a560d62c8": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-38b151ce0b03246854785b22bb5db7a2c66b01cad2780bdfdcb8446a560d62c8",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "bar_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "bar_x",
+                                                    "customLabel": true,
+                                                    "fieldName": "day",
+                                                    "label": "Day",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_y_0",
+                                                    "customLabel": true,
+                                                    "fieldName": "Uploaded",
+                                                    "label": "Uploaded",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_y_1",
+                                                    "customLabel": true,
+                                                    "fieldName": "Deleted",
+                                                    "label": "Deleted",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-38b151ce0b03246854785b22bb5db7a2c66b01cad2780bdfdcb8446a560d62c8",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb) BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-38b151ce0b03246854785b22bb5db7a2c66b01cad2780bdfdcb8446a560d62c8",
+                                    "name": "indexpattern-datasource-layer-bar_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb) BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "bar_y_0",
+                                            "bar_y_1"
+                                        ],
+                                        "layerId": "bar_0",
+                                        "layerType": "data",
+                                        "seriesType": "bar",
+                                        "xAccessor": "bar_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_y_0"
+                                            },
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_y_1"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar",
+                                "xExtent": {
+                                    "mode": "dataBounds",
+                                    "niceValues": false
+                                }
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "Uploaded and deleted data per day"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "uploaded-deleted-per-day",
+                    "w": 24,
+                    "x": 0,
+                    "y": 16
+                },
+                "panelIndex": "uploaded-deleted-per-day",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-7c8144b9fe9cb7e8e01957ad717e3fedbc65805158702994fbda097e10c79ff0": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-7c8144b9fe9cb7e8e01957ad717e3fedbc65805158702994fbda097e10c79ff0",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "line_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "line_x",
+                                                    "customLabel": true,
+                                                    "fieldName": "day",
+                                                    "label": "Day",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "line_y_0",
+                                                    "customLabel": true,
+                                                    "fieldName": "Downloaded",
+                                                    "label": "Downloaded",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "line_y_1",
+                                                    "customLabel": true,
+                                                    "fieldName": "Free egress allowance",
+                                                    "label": "Free egress allowance",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 0,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-7c8144b9fe9cb7e8e01957ad717e3fedbc65805158702994fbda097e10c79ff0",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS Downloaded = SUM(backblaze_b2.usage.downloaded_gb), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 BY day = DATE_TRUNC(1 day, @timestamp) | EVAL `Free egress allowance` = gb_days * 3.0 / 30.0 | KEEP day, Downloaded, `Free egress allowance` | SORT day"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-7c8144b9fe9cb7e8e01957ad717e3fedbc65805158702994fbda097e10c79ff0",
+                                    "name": "indexpattern-datasource-layer-line_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS Downloaded = SUM(backblaze_b2.usage.downloaded_gb), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 BY day = DATE_TRUNC(1 day, @timestamp) | EVAL `Free egress allowance` = gb_days * 3.0 / 30.0 | KEEP day, Downloaded, `Free egress allowance` | SORT day"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "line_y_0",
+                                            "line_y_1"
+                                        ],
+                                        "layerId": "line_0",
+                                        "layerType": "data",
+                                        "seriesType": "line",
+                                        "xAccessor": "line_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "line_y_0"
+                                            },
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "line_y_1"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "line",
+                                "xExtent": {
+                                    "mode": "dataBounds",
+                                    "niceValues": false
+                                }
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "Downloaded data vs. daily free egress allowance"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "downloaded-vs-free-egress",
+                    "w": 24,
+                    "x": 24,
+                    "y": 16
+                },
+                "panelIndex": "downloaded-vs-free-egress",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-7ea3ab2e1ba27303bbed3e7b410c2858717f99950045c8bdd62fb2f2a719e96b": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-7ea3ab2e1ba27303bbed3e7b410c2858717f99950045c8bdd62fb2f2a719e96b",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "bar_stacked_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "bar_stacked_x",
+                                                    "customLabel": true,
+                                                    "fieldName": "day",
+                                                    "label": "Day",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_stacked_y_0",
+                                                    "customLabel": true,
+                                                    "fieldName": "Class A",
+                                                    "label": "Class A",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": true,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_stacked_y_1",
+                                                    "customLabel": true,
+                                                    "fieldName": "Class B",
+                                                    "label": "Class B",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": true,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_stacked_y_2",
+                                                    "customLabel": true,
+                                                    "fieldName": "Class C",
+                                                    "label": "Class C",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": true,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_stacked_y_3",
+                                                    "customLabel": true,
+                                                    "fieldName": "Class D",
+                                                    "label": "Class D",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": true,
+                                                                "decimals": 0
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-7ea3ab2e1ba27303bbed3e7b410c2858717f99950045c8bdd62fb2f2a719e96b",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Class A` = SUM(backblaze_b2.usage.api_txn_class_a), `Class B` = SUM(backblaze_b2.usage.api_txn_class_b), `Class C` = SUM(backblaze_b2.usage.api_txn_class_c), `Class D` = SUM(backblaze_b2.usage.api_txn_class_d) BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-7ea3ab2e1ba27303bbed3e7b410c2858717f99950045c8bdd62fb2f2a719e96b",
+                                    "name": "indexpattern-datasource-layer-bar_stacked_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Class A` = SUM(backblaze_b2.usage.api_txn_class_a), `Class B` = SUM(backblaze_b2.usage.api_txn_class_b), `Class C` = SUM(backblaze_b2.usage.api_txn_class_c), `Class D` = SUM(backblaze_b2.usage.api_txn_class_d) BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "bar_stacked_y_0",
+                                            "bar_stacked_y_1",
+                                            "bar_stacked_y_2",
+                                            "bar_stacked_y_3"
+                                        ],
+                                        "layerId": "bar_stacked_0",
+                                        "layerType": "data",
+                                        "seriesType": "bar_stacked",
+                                        "xAccessor": "bar_stacked_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_stacked_y_0"
+                                            },
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_stacked_y_1"
+                                            },
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_stacked_y_2"
+                                            },
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_stacked_y_3"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar_stacked",
+                                "xExtent": {
+                                    "mode": "dataBounds",
+                                    "niceValues": false
+                                }
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "API transactions per day by class"
+                },
+                "gridData": {
+                    "h": 12,
+                    "i": "api-transactions-by-class",
+                    "w": 24,
+                    "x": 0,
+                    "y": 27
+                },
+                "panelIndex": "api-transactions-by-class",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Stored now",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_1",
+                                                    "fieldName": "Uploaded",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_2",
+                                                    "fieldName": "Deleted",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_3",
+                                                    "fieldName": "Downloaded",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "number",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_4",
+                                                    "fieldName": "Est. storage cost / month",
+                                                    "inMetricDimension": true,
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "custom",
+                                                            "params": {
+                                                                "decimals": 2,
+                                                                "pattern": "$0,0.00"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | STATS `Stored now` = SUM(CASE(@timestamp == latest_day, backblaze_b2.usage.stored_gb, 0.0)), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp), Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb), Downloaded = SUM(backblaze_b2.usage.downloaded_gb) BY Bucket = entity.name | EVAL `Est. storage cost / month` = gb_days / days * 6.95 / 1000.0 | KEEP Bucket, `Stored now`, Uploaded, Deleted, Downloaded, `Est. storage cost / month` | SORT `Stored now` DESC"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | STATS `Stored now` = SUM(CASE(@timestamp == latest_day, backblaze_b2.usage.stored_gb, 0.0)), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp), Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb), Downloaded = SUM(backblaze_b2.usage.downloaded_gb) BY Bucket = entity.name | EVAL `Est. storage cost / month` = gb_days / days * 6.95 / 1000.0 | KEEP Bucket, `Stored now`, Uploaded, Deleted, Downloaded, `Est. storage cost / month` | SORT `Stored now` DESC"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_1",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_2",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_3",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_4",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "layer_0",
+                                "layerType": "data"
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "title": "Usage by bucket"
+                },
+                "gridData": {
+                    "h": 12,
+                    "i": "usage-by-bucket-table",
+                    "w": 24,
+                    "x": 24,
+                    "y": 27
+                },
+                "panelIndex": "usage-by-bucket-table",
+                "type": "vis"
+            }
+        ],
+        "timeFrom": "now-30d",
+        "timeRestore": true,
+        "timeTo": "now",
+        "title": "[Logs Backblaze B2] Storage usage and costs"
+    },
+    "coreMigrationVersion": "8.8.0",
+    "created_at": "2026-09-15T07:27:01.735Z",
+    "id": "backblaze_b2-storage-usage-costs",
+    "references": [],
+    "type": "dashboard",
+    "typeMigrationVersion": "10.3.0"
+}
