@@ -2,7 +2,26 @@
     "attributes": {
         "description": "Daily storage, transfer, and estimated cost from Backblaze B2 usage reports.",
         "kibanaSavedObjectMeta": {
-            "searchSourceJSON": {}
+            "searchSourceJSON": {
+                "filter": [
+                    {
+                        "meta": {
+                            "field": "data_stream.dataset",
+                            "indexRefName": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+                            "key": "data_stream.dataset",
+                            "params": {
+                                "query": "backblaze_b2.usage"
+                            },
+                            "type": "phrase"
+                        },
+                        "query": {
+                            "match_phrase": {
+                                "data_stream.dataset": "backblaze_b2.usage"
+                            }
+                        }
+                    }
+                ]
+            }
         },
         "optionsJSON": {
             "autoApplyFilters": true,
@@ -16,16 +35,62 @@
         "panelsJSON": [
             {
                 "embeddableConfig": {
+                    "layout": "horizontal",
+                    "links": [
+                        {
+                            "destinationRefName": "link_0_dashboard",
+                            "label": "Storage usage and costs",
+                            "options": {
+                                "open_in_new_tab": false,
+                                "use_filters": false,
+                                "use_time_range": true
+                            },
+                            "type": "dashboardLink"
+                        },
+                        {
+                            "destinationRefName": "link_1_dashboard",
+                            "label": "Bucket activity",
+                            "options": {
+                                "open_in_new_tab": false,
+                                "use_filters": false,
+                                "use_time_range": true
+                            },
+                            "type": "dashboardLink"
+                        },
+                        {
+                            "destinationRefName": "link_2_dashboard",
+                            "label": "Bucket inventory",
+                            "options": {
+                                "open_in_new_tab": false,
+                                "use_filters": false,
+                                "use_time_range": true
+                            },
+                            "type": "dashboardLink"
+                        }
+                    ]
+                },
+                "gridData": {
+                    "h": 3,
+                    "i": "dashboard-navigation",
+                    "w": 48,
+                    "x": 0,
+                    "y": 0
+                },
+                "panelIndex": "dashboard-navigation",
+                "type": "links"
+            },
+            {
+                "embeddableConfig": {
                     "attributes": {
                         "references": [],
                         "state": {
                             "adHocDataViews": {
-                                "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd": {
+                                "logs-backblaze_b2.usage-*-e78423cd8c543f9ff42924ff80126ed3f3f3c31d39541fdae6e9deb684682e9e": {
                                     "allowHidden": false,
                                     "allowNoIndex": false,
                                     "fieldAttrs": {},
                                     "fieldFormats": {},
-                                    "id": "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd",
+                                    "id": "logs-backblaze_b2.usage-*-e78423cd8c543f9ff42924ff80126ed3f3f3c31d39541fdae6e9deb684682e9e",
                                     "name": "logs-backblaze_b2.usage-*",
                                     "runtimeFieldMap": {},
                                     "sourceFilters": [],
@@ -40,7 +105,7 @@
                                             "columns": [
                                                 {
                                                     "columnId": "metric_accessor_metric",
-                                                    "fieldName": "Stored (latest day)",
+                                                    "fieldName": "Stored (latest report)",
                                                     "meta": {
                                                         "type": "number"
                                                     },
@@ -56,9 +121,9 @@
                                                     }
                                                 }
                                             ],
-                                            "index": "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd",
+                                            "index": "logs-backblaze_b2.usage-*-e78423cd8c543f9ff42924ff80126ed3f3f3c31d39541fdae6e9deb684682e9e",
                                             "query": {
-                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | WHERE @timestamp == latest_day | STATS `Stored (latest day)` = SUM(backblaze_b2.usage.stored_gb)"
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | WHERE @timestamp == latest_day | STATS `Stored (latest report)` = SUM(backblaze_b2.usage.stored_gb)"
                                             }
                                         }
                                     }
@@ -67,13 +132,13 @@
                             "filters": [],
                             "internalReferences": [
                                 {
-                                    "id": "logs-backblaze_b2.usage-*-708f9883636693f550a1cbb9d94fc163c3b06c01ffd13948a51543de35c09abd",
+                                    "id": "logs-backblaze_b2.usage-*-e78423cd8c543f9ff42924ff80126ed3f3f3c31d39541fdae6e9deb684682e9e",
                                     "name": "indexpattern-datasource-layer-layer_0",
                                     "type": "index-pattern"
                                 }
                             ],
                             "query": {
-                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | WHERE @timestamp == latest_day | STATS `Stored (latest day)` = SUM(backblaze_b2.usage.stored_gb)"
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | WHERE @timestamp == latest_day | STATS `Stored (latest report)` = SUM(backblaze_b2.usage.stored_gb)"
                             },
                             "visualization": {
                                 "layerId": "layer_0",
@@ -86,6 +151,10 @@
                         "version": 2,
                         "visualizationType": "lnsMetric"
                     },
+                    "time_range": {
+                        "from": "now-62d",
+                        "to": "now"
+                    },
                     "title": ""
                 },
                 "gridData": {
@@ -93,7 +162,7 @@
                     "i": "kpi-stored-latest",
                     "w": 8,
                     "x": 0,
-                    "y": 0
+                    "y": 3
                 },
                 "panelIndex": "kpi-stored-latest",
                 "type": "vis"
@@ -104,12 +173,12 @@
                         "references": [],
                         "state": {
                             "adHocDataViews": {
-                                "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998": {
+                                "logs-backblaze_b2.usage-*-5fe7b0c167d7bb895d6ec93d7ff8a7fdb5418c027f990644223bfe7930735acf": {
                                     "allowHidden": false,
                                     "allowNoIndex": false,
                                     "fieldAttrs": {},
                                     "fieldFormats": {},
-                                    "id": "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998",
+                                    "id": "logs-backblaze_b2.usage-*-5fe7b0c167d7bb895d6ec93d7ff8a7fdb5418c027f990644223bfe7930735acf",
                                     "name": "logs-backblaze_b2.usage-*",
                                     "runtimeFieldMap": {},
                                     "sourceFilters": [],
@@ -124,7 +193,7 @@
                                             "columns": [
                                                 {
                                                     "columnId": "metric_accessor_metric",
-                                                    "fieldName": "Est. storage cost / month",
+                                                    "fieldName": "Month-to-date cost",
                                                     "meta": {
                                                         "type": "number"
                                                     },
@@ -139,9 +208,9 @@
                                                     }
                                                 }
                                             ],
-                                            "index": "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998",
+                                            "index": "logs-backblaze_b2.usage-*-5fe7b0c167d7bb895d6ec93d7ff8a7fdb5418c027f990644223bfe7930735acf",
                                             "query": {
-                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp) | EVAL `Est. storage cost / month` = GREATEST(gb_days / days - 10.0, 0.0) * 6.95 / 1000.0 | KEEP `Est. storage cost / month`"
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | INLINE STATS latest_report = MAX(@timestamp) | WHERE DATE_TRUNC(1 month, @timestamp) == DATE_TRUNC(1 month, latest_report) | STATS gb_hours = SUM(backblaze_b2.usage.storage_byte_hours) / 1000000000.0, days = COUNT_DISTINCT(@timestamp), downloaded_gb = SUM(backblaze_b2.usage.downloaded_gb), month_start = MIN(DATE_TRUNC(1 month, @timestamp)) | EVAL days_in_month = DATE_DIFF(\"day\", month_start, month_start + 1 month), avg_stored_gb = gb_hours / 24.0 / days, egress_projected_gb = downloaded_gb * days_in_month / days, projected = GREATEST(avg_stored_gb - 10.0, 0.0) * TO_DOUBLE(?price_per_tb) / 1000.0 + GREATEST(egress_projected_gb - avg_stored_gb * 3.0, 0.0) * 0.01 | EVAL `Month-to-date cost` = projected * days / days_in_month | KEEP `Month-to-date cost`"
                                             }
                                         }
                                     }
@@ -150,13 +219,13 @@
                             "filters": [],
                             "internalReferences": [
                                 {
-                                    "id": "logs-backblaze_b2.usage-*-8cc447c1d700ae4c8634297cd95d758c3fb07870ab29e97e47e408ffb5768998",
+                                    "id": "logs-backblaze_b2.usage-*-5fe7b0c167d7bb895d6ec93d7ff8a7fdb5418c027f990644223bfe7930735acf",
                                     "name": "indexpattern-datasource-layer-layer_0",
                                     "type": "index-pattern"
                                 }
                             ],
                             "query": {
-                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp) | EVAL `Est. storage cost / month` = GREATEST(gb_days / days - 10.0, 0.0) * 6.95 / 1000.0 | KEEP `Est. storage cost / month`"
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | INLINE STATS latest_report = MAX(@timestamp) | WHERE DATE_TRUNC(1 month, @timestamp) == DATE_TRUNC(1 month, latest_report) | STATS gb_hours = SUM(backblaze_b2.usage.storage_byte_hours) / 1000000000.0, days = COUNT_DISTINCT(@timestamp), downloaded_gb = SUM(backblaze_b2.usage.downloaded_gb), month_start = MIN(DATE_TRUNC(1 month, @timestamp)) | EVAL days_in_month = DATE_DIFF(\"day\", month_start, month_start + 1 month), avg_stored_gb = gb_hours / 24.0 / days, egress_projected_gb = downloaded_gb * days_in_month / days, projected = GREATEST(avg_stored_gb - 10.0, 0.0) * TO_DOUBLE(?price_per_tb) / 1000.0 + GREATEST(egress_projected_gb - avg_stored_gb * 3.0, 0.0) * 0.01 | EVAL `Month-to-date cost` = projected * days / days_in_month | KEEP `Month-to-date cost`"
                             },
                             "visualization": {
                                 "layerId": "layer_0",
@@ -169,16 +238,194 @@
                         "version": 2,
                         "visualizationType": "lnsMetric"
                     },
+                    "time_range": {
+                        "from": "now-62d",
+                        "to": "now"
+                    },
                     "title": ""
                 },
                 "gridData": {
                     "h": 5,
-                    "i": "kpi-storage-cost-month",
+                    "i": "kpi-month-to-date-cost",
                     "w": 8,
                     "x": 8,
-                    "y": 0
+                    "y": 3
                 },
-                "panelIndex": "kpi-storage-cost-month",
+                "panelIndex": "kpi-month-to-date-cost",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-e2d13684658ccc634e3a7c6c903a37572c6657a62814a31d5ca3765436fbdc53": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-e2d13684658ccc634e3a7c6c903a37572c6657a62814a31d5ca3765436fbdc53",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Projected month cost",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "custom",
+                                                            "params": {
+                                                                "decimals": 2,
+                                                                "pattern": "$0,0.00"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-e2d13684658ccc634e3a7c6c903a37572c6657a62814a31d5ca3765436fbdc53",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | INLINE STATS latest_report = MAX(@timestamp) | WHERE DATE_TRUNC(1 month, @timestamp) == DATE_TRUNC(1 month, latest_report) | STATS gb_hours = SUM(backblaze_b2.usage.storage_byte_hours) / 1000000000.0, days = COUNT_DISTINCT(@timestamp), downloaded_gb = SUM(backblaze_b2.usage.downloaded_gb), month_start = MIN(DATE_TRUNC(1 month, @timestamp)) | EVAL days_in_month = DATE_DIFF(\"day\", month_start, month_start + 1 month), avg_stored_gb = gb_hours / 24.0 / days, egress_projected_gb = downloaded_gb * days_in_month / days, projected = GREATEST(avg_stored_gb - 10.0, 0.0) * TO_DOUBLE(?price_per_tb) / 1000.0 + GREATEST(egress_projected_gb - avg_stored_gb * 3.0, 0.0) * 0.01 | EVAL `Projected month cost` = projected | KEEP `Projected month cost`"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-e2d13684658ccc634e3a7c6c903a37572c6657a62814a31d5ca3765436fbdc53",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | INLINE STATS latest_report = MAX(@timestamp) | WHERE DATE_TRUNC(1 month, @timestamp) == DATE_TRUNC(1 month, latest_report) | STATS gb_hours = SUM(backblaze_b2.usage.storage_byte_hours) / 1000000000.0, days = COUNT_DISTINCT(@timestamp), downloaded_gb = SUM(backblaze_b2.usage.downloaded_gb), month_start = MIN(DATE_TRUNC(1 month, @timestamp)) | EVAL days_in_month = DATE_DIFF(\"day\", month_start, month_start + 1 month), avg_stored_gb = gb_hours / 24.0 / days, egress_projected_gb = downloaded_gb * days_in_month / days, projected = GREATEST(avg_stored_gb - 10.0, 0.0) * TO_DOUBLE(?price_per_tb) / 1000.0 + GREATEST(egress_projected_gb - avg_stored_gb * 3.0, 0.0) * 0.01 | EVAL `Projected month cost` = projected | KEEP `Projected month cost`"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "time_range": {
+                        "from": "now-62d",
+                        "to": "now"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-projected-month-cost",
+                    "w": 8,
+                    "x": 16,
+                    "y": 3
+                },
+                "panelIndex": "kpi-projected-month-cost",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-4e4cecdc3cd0f2c4743b41e1dd549b21234691b7180f483df98e490e5ae73517": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-4e4cecdc3cd0f2c4743b41e1dd549b21234691b7180f483df98e490e5ae73517",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "layer_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "metric_accessor_metric",
+                                                    "fieldName": "Free egress used (projected)",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "percent",
+                                                            "params": {
+                                                                "compact": false,
+                                                                "decimals": 2
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-4e4cecdc3cd0f2c4743b41e1dd549b21234691b7180f483df98e490e5ae73517",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | INLINE STATS latest_report = MAX(@timestamp) | WHERE DATE_TRUNC(1 month, @timestamp) == DATE_TRUNC(1 month, latest_report) | STATS gb_hours = SUM(backblaze_b2.usage.storage_byte_hours) / 1000000000.0, days = COUNT_DISTINCT(@timestamp), downloaded_gb = SUM(backblaze_b2.usage.downloaded_gb), month_start = MIN(DATE_TRUNC(1 month, @timestamp)) | EVAL days_in_month = DATE_DIFF(\"day\", month_start, month_start + 1 month), avg_stored_gb = gb_hours / 24.0 / days, egress_projected_gb = downloaded_gb * days_in_month / days, projected = GREATEST(avg_stored_gb - 10.0, 0.0) * TO_DOUBLE(?price_per_tb) / 1000.0 + GREATEST(egress_projected_gb - avg_stored_gb * 3.0, 0.0) * 0.01 | EVAL `Free egress used (projected)` = egress_projected_gb / (avg_stored_gb * 3.0) | KEEP `Free egress used (projected)`"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-4e4cecdc3cd0f2c4743b41e1dd549b21234691b7180f483df98e490e5ae73517",
+                                    "name": "indexpattern-datasource-layer-layer_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | INLINE STATS latest_report = MAX(@timestamp) | WHERE DATE_TRUNC(1 month, @timestamp) == DATE_TRUNC(1 month, latest_report) | STATS gb_hours = SUM(backblaze_b2.usage.storage_byte_hours) / 1000000000.0, days = COUNT_DISTINCT(@timestamp), downloaded_gb = SUM(backblaze_b2.usage.downloaded_gb), month_start = MIN(DATE_TRUNC(1 month, @timestamp)) | EVAL days_in_month = DATE_DIFF(\"day\", month_start, month_start + 1 month), avg_stored_gb = gb_hours / 24.0 / days, egress_projected_gb = downloaded_gb * days_in_month / days, projected = GREATEST(avg_stored_gb - 10.0, 0.0) * TO_DOUBLE(?price_per_tb) / 1000.0 + GREATEST(egress_projected_gb - avg_stored_gb * 3.0, 0.0) * 0.01 | EVAL `Free egress used (projected)` = egress_projected_gb / (avg_stored_gb * 3.0) | KEEP `Free egress used (projected)`"
+                            },
+                            "visualization": {
+                                "layerId": "layer_0",
+                                "layerType": "data",
+                                "metricAccessor": "metric_accessor_metric",
+                                "showBar": false
+                            }
+                        },
+                        "title": "",
+                        "version": 2,
+                        "visualizationType": "lnsMetric"
+                    },
+                    "time_range": {
+                        "from": "now-62d",
+                        "to": "now"
+                    },
+                    "title": ""
+                },
+                "gridData": {
+                    "h": 5,
+                    "i": "kpi-free-egress-used",
+                    "w": 8,
+                    "x": 24,
+                    "y": 3
+                },
+                "panelIndex": "kpi-free-egress-used",
                 "type": "vis"
             },
             {
@@ -259,94 +506,10 @@
                     "h": 5,
                     "i": "kpi-uploaded",
                     "w": 8,
-                    "x": 16,
-                    "y": 0
+                    "x": 32,
+                    "y": 3
                 },
                 "panelIndex": "kpi-uploaded",
-                "type": "vis"
-            },
-            {
-                "embeddableConfig": {
-                    "attributes": {
-                        "references": [],
-                        "state": {
-                            "adHocDataViews": {
-                                "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74": {
-                                    "allowHidden": false,
-                                    "allowNoIndex": false,
-                                    "fieldAttrs": {},
-                                    "fieldFormats": {},
-                                    "id": "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74",
-                                    "name": "logs-backblaze_b2.usage-*",
-                                    "runtimeFieldMap": {},
-                                    "sourceFilters": [],
-                                    "title": "logs-backblaze_b2.usage-*",
-                                    "type": "esql"
-                                }
-                            },
-                            "datasourceStates": {
-                                "textBased": {
-                                    "layers": {
-                                        "layer_0": {
-                                            "columns": [
-                                                {
-                                                    "columnId": "metric_accessor_metric",
-                                                    "fieldName": "Deleted",
-                                                    "meta": {
-                                                        "type": "number"
-                                                    },
-                                                    "params": {
-                                                        "format": {
-                                                            "id": "number",
-                                                            "params": {
-                                                                "compact": false,
-                                                                "decimals": 2,
-                                                                "suffix": " GB"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            ],
-                                            "index": "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74",
-                                            "query": {
-                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Deleted` = SUM(backblaze_b2.usage.deleted_gb)"
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "filters": [],
-                            "internalReferences": [
-                                {
-                                    "id": "logs-backblaze_b2.usage-*-e52505c6c97d43a41e462fac1e76272a0dab55584b9862dadc7bcebd23b80f74",
-                                    "name": "indexpattern-datasource-layer-layer_0",
-                                    "type": "index-pattern"
-                                }
-                            ],
-                            "query": {
-                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS `Deleted` = SUM(backblaze_b2.usage.deleted_gb)"
-                            },
-                            "visualization": {
-                                "layerId": "layer_0",
-                                "layerType": "data",
-                                "metricAccessor": "metric_accessor_metric",
-                                "showBar": false
-                            }
-                        },
-                        "title": "",
-                        "version": 2,
-                        "visualizationType": "lnsMetric"
-                    },
-                    "title": ""
-                },
-                "gridData": {
-                    "h": 5,
-                    "i": "kpi-deleted",
-                    "w": 8,
-                    "x": 24,
-                    "y": 0
-                },
-                "panelIndex": "kpi-deleted",
                 "type": "vis"
             },
             {
@@ -427,8 +590,8 @@
                     "h": 5,
                     "i": "kpi-downloaded",
                     "w": 8,
-                    "x": 32,
-                    "y": 0
+                    "x": 40,
+                    "y": 3
                 },
                 "panelIndex": "kpi-downloaded",
                 "type": "vis"
@@ -439,12 +602,12 @@
                         "references": [],
                         "state": {
                             "adHocDataViews": {
-                                "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567": {
+                                "logs-backblaze_b2.usage-*-1334f64d1ddcea5069d76921460c067721d12587fdd725358997241bc40ca9d4": {
                                     "allowHidden": false,
                                     "allowNoIndex": false,
                                     "fieldAttrs": {},
                                     "fieldFormats": {},
-                                    "id": "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567",
+                                    "id": "logs-backblaze_b2.usage-*-1334f64d1ddcea5069d76921460c067721d12587fdd725358997241bc40ca9d4",
                                     "name": "logs-backblaze_b2.usage-*",
                                     "runtimeFieldMap": {},
                                     "sourceFilters": [],
@@ -458,25 +621,55 @@
                                         "layer_0": {
                                             "columns": [
                                                 {
-                                                    "columnId": "metric_accessor_metric",
-                                                    "fieldName": "Free egress used",
+                                                    "columnId": "datatable_accessor_row_0",
+                                                    "fieldName": "Bucket",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_1",
+                                                    "fieldName": "Status",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_2",
+                                                    "fieldName": "Last upload",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_row_3",
+                                                    "fieldName": "Last activity",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "datatable_accessor_metric_0",
+                                                    "fieldName": "Stored",
+                                                    "inMetricDimension": true,
                                                     "meta": {
                                                         "type": "number"
                                                     },
                                                     "params": {
                                                         "format": {
-                                                            "id": "percent",
+                                                            "id": "number",
                                                             "params": {
                                                                 "compact": false,
-                                                                "decimals": 2
+                                                                "decimals": 2,
+                                                                "suffix": " GB"
                                                             }
                                                         }
                                                     }
                                                 }
                                             ],
-                                            "index": "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567",
+                                            "index": "logs-backblaze_b2.usage-*-1334f64d1ddcea5069d76921460c067721d12587fdd725358997241bc40ca9d4",
                                             "query": {
-                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, downloaded = SUM(backblaze_b2.usage.downloaded_gb) | EVAL `Free egress used` = downloaded / (gb_days * 3.0 / 30.0) | KEEP `Free egress used`"
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_report = MAX(@timestamp) | STATS `Last upload` = MAX(CASE(backblaze_b2.usage.uploaded_gb \u003e 0, @timestamp, null)), `Last activity` = MAX(CASE(backblaze_b2.usage.api_txn_total \u003e 0 OR backblaze_b2.usage.uploaded_gb \u003e 0, @timestamp, null)), latest_report = MAX(latest_report), Stored = SUM(CASE(@timestamp == latest_report, backblaze_b2.usage.stored_gb, 0.0)) BY Bucket = entity.name | EVAL days_since_upload = DATE_DIFF(\"day\", `Last upload`, latest_report), days_since_activity = DATE_DIFF(\"day\", `Last activity`, latest_report), Status = CASE(`Last activity` IS NULL, \"No activity in period\", days_since_activity \u003e 1, \"Stale\", `Last upload` IS NULL OR days_since_upload \u003e 1, \"Active, no new uploads\", \"Recent upload\") | KEEP Bucket, Status, `Last upload`, `Last activity`, Stored | SORT `Last activity` ASC NULLS FIRST, Bucket"
                                             }
                                         }
                                     }
@@ -485,35 +678,64 @@
                             "filters": [],
                             "internalReferences": [
                                 {
-                                    "id": "logs-backblaze_b2.usage-*-49a7e4ad4741d116637118675a560e75a978e89bc0a9f846c5f0ebd95ed3c567",
+                                    "id": "logs-backblaze_b2.usage-*-1334f64d1ddcea5069d76921460c067721d12587fdd725358997241bc40ca9d4",
                                     "name": "indexpattern-datasource-layer-layer_0",
                                     "type": "index-pattern"
                                 }
                             ],
                             "query": {
-                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, downloaded = SUM(backblaze_b2.usage.downloaded_gb) | EVAL `Free egress used` = downloaded / (gb_days * 3.0 / 30.0) | KEEP `Free egress used`"
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_report = MAX(@timestamp) | STATS `Last upload` = MAX(CASE(backblaze_b2.usage.uploaded_gb \u003e 0, @timestamp, null)), `Last activity` = MAX(CASE(backblaze_b2.usage.api_txn_total \u003e 0 OR backblaze_b2.usage.uploaded_gb \u003e 0, @timestamp, null)), latest_report = MAX(latest_report), Stored = SUM(CASE(@timestamp == latest_report, backblaze_b2.usage.stored_gb, 0.0)) BY Bucket = entity.name | EVAL days_since_upload = DATE_DIFF(\"day\", `Last upload`, latest_report), days_since_activity = DATE_DIFF(\"day\", `Last activity`, latest_report), Status = CASE(`Last activity` IS NULL, \"No activity in period\", days_since_activity \u003e 1, \"Stale\", `Last upload` IS NULL OR days_since_upload \u003e 1, \"Active, no new uploads\", \"Recent upload\") | KEEP Bucket, Status, `Last upload`, `Last activity`, Stored | SORT `Last activity` ASC NULLS FIRST, Bucket"
                             },
                             "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "datatable_accessor_row_0",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_1",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_2",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_row_3",
+                                        "isMetric": false,
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "datatable_accessor_metric_0",
+                                        "isMetric": true,
+                                        "isTransposed": false
+                                    }
+                                ],
                                 "layerId": "layer_0",
-                                "layerType": "data",
-                                "metricAccessor": "metric_accessor_metric",
-                                "showBar": false
+                                "layerType": "data"
                             }
                         },
                         "title": "",
                         "version": 2,
-                        "visualizationType": "lnsMetric"
+                        "visualizationType": "lnsDatatable"
                     },
-                    "title": ""
+                    "time_range": {
+                        "from": "now-62d",
+                        "to": "now"
+                    },
+                    "title": "Backup freshness"
                 },
                 "gridData": {
-                    "h": 5,
-                    "i": "kpi-free-egress-used",
-                    "w": 8,
-                    "x": 40,
-                    "y": 0
+                    "h": 11,
+                    "i": "backup-freshness-table",
+                    "w": 24,
+                    "x": 0,
+                    "y": 8
                 },
-                "panelIndex": "kpi-free-egress-used",
+                "panelIndex": "backup-freshness-table",
                 "type": "vis"
             },
             {
@@ -640,131 +862,11 @@
                 "gridData": {
                     "h": 11,
                     "i": "stored-per-day-by-bucket",
-                    "w": 32,
-                    "x": 0,
-                    "y": 5
+                    "w": 24,
+                    "x": 24,
+                    "y": 8
                 },
                 "panelIndex": "stored-per-day-by-bucket",
-                "type": "vis"
-            },
-            {
-                "embeddableConfig": {
-                    "attributes": {
-                        "references": [],
-                        "state": {
-                            "adHocDataViews": {
-                                "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5": {
-                                    "allowHidden": false,
-                                    "allowNoIndex": false,
-                                    "fieldAttrs": {},
-                                    "fieldFormats": {},
-                                    "id": "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5",
-                                    "name": "logs-backblaze_b2.usage-*",
-                                    "runtimeFieldMap": {},
-                                    "sourceFilters": [],
-                                    "title": "logs-backblaze_b2.usage-*",
-                                    "type": "esql"
-                                }
-                            },
-                            "datasourceStates": {
-                                "textBased": {
-                                    "layers": {
-                                        "bar_0": {
-                                            "columns": [
-                                                {
-                                                    "columnId": "bar_x",
-                                                    "customLabel": true,
-                                                    "fieldName": "day",
-                                                    "label": "Day",
-                                                    "meta": {
-                                                        "type": "date"
-                                                    }
-                                                },
-                                                {
-                                                    "columnId": "bar_y_0",
-                                                    "customLabel": true,
-                                                    "fieldName": "cost",
-                                                    "label": "Est. cost",
-                                                    "meta": {
-                                                        "type": "number"
-                                                    },
-                                                    "params": {
-                                                        "format": {
-                                                            "id": "custom",
-                                                            "params": {
-                                                                "decimals": 2,
-                                                                "pattern": "$0,0.00"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            ],
-                                            "index": "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5",
-                                            "query": {
-                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS cost = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 * 6.95 / 1000.0 / 30.44 BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "filters": [],
-                            "internalReferences": [
-                                {
-                                    "id": "logs-backblaze_b2.usage-*-1d6f436235ba778b35375cc3ebbf57cefaaffee13096e43ee67580115f9988c5",
-                                    "name": "indexpattern-datasource-layer-bar_0",
-                                    "type": "index-pattern"
-                                }
-                            ],
-                            "query": {
-                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS cost = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 * 6.95 / 1000.0 / 30.44 BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
-                            },
-                            "visualization": {
-                                "axisTitlesVisibilitySettings": {
-                                    "x": false,
-                                    "yLeft": false,
-                                    "yRight": true
-                                },
-                                "layers": [
-                                    {
-                                        "accessors": [
-                                            "bar_y_0"
-                                        ],
-                                        "layerId": "bar_0",
-                                        "layerType": "data",
-                                        "seriesType": "bar",
-                                        "xAccessor": "bar_x",
-                                        "yConfig": [
-                                            {
-                                                "axisMode": "left",
-                                                "forAccessor": "bar_y_0"
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "legend": {
-                                    "isVisible": false,
-                                    "position": "right"
-                                },
-                                "preferredSeriesType": "bar",
-                                "xExtent": {
-                                    "mode": "dataBounds",
-                                    "niceValues": false
-                                }
-                            }
-                        },
-                        "title": "",
-                        "visualizationType": "lnsXY"
-                    },
-                    "title": "Est. storage cost per day"
-                },
-                "gridData": {
-                    "h": 11,
-                    "i": "storage-cost-per-day",
-                    "w": 16,
-                    "x": 32,
-                    "y": 5
-                },
-                "panelIndex": "storage-cost-per-day",
                 "type": "vis"
             },
             {
@@ -907,7 +1009,7 @@
                     "i": "uploaded-deleted-per-day",
                     "w": 24,
                     "x": 0,
-                    "y": 16
+                    "y": 19
                 },
                 "panelIndex": "uploaded-deleted-per-day",
                 "type": "vis"
@@ -1052,9 +1154,129 @@
                     "i": "downloaded-vs-free-egress",
                     "w": 24,
                     "x": 24,
-                    "y": 16
+                    "y": 19
                 },
                 "panelIndex": "downloaded-vs-free-egress",
+                "type": "vis"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "logs-backblaze_b2.usage-*-13043b6e73d02528e0cc7e91d8157c21a3b2eaccd450bd8246d44783675fae20": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldAttrs": {},
+                                    "fieldFormats": {},
+                                    "id": "logs-backblaze_b2.usage-*-13043b6e73d02528e0cc7e91d8157c21a3b2eaccd450bd8246d44783675fae20",
+                                    "name": "logs-backblaze_b2.usage-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-backblaze_b2.usage-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "layers": {
+                                        "bar_0": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "bar_x",
+                                                    "customLabel": true,
+                                                    "fieldName": "day",
+                                                    "label": "Day",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "bar_y_0",
+                                                    "customLabel": true,
+                                                    "fieldName": "cost",
+                                                    "label": "Est. cost",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    },
+                                                    "params": {
+                                                        "format": {
+                                                            "id": "custom",
+                                                            "params": {
+                                                                "decimals": 2,
+                                                                "pattern": "$0,0.00"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "index": "logs-backblaze_b2.usage-*-13043b6e73d02528e0cc7e91d8157c21a3b2eaccd450bd8246d44783675fae20",
+                                            "query": {
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS cost = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 * TO_DOUBLE(?price_per_tb) / 1000.0 / 30.44 BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [
+                                {
+                                    "id": "logs-backblaze_b2.usage-*-13043b6e73d02528e0cc7e91d8157c21a3b2eaccd450bd8246d44783675fae20",
+                                    "name": "indexpattern-datasource-layer-bar_0",
+                                    "type": "index-pattern"
+                                }
+                            ],
+                            "query": {
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" | STATS cost = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0 * TO_DOUBLE(?price_per_tb) / 1000.0 / 30.44 BY day = DATE_TRUNC(1 day, @timestamp) | SORT day"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": true
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "bar_y_0"
+                                        ],
+                                        "layerId": "bar_0",
+                                        "layerType": "data",
+                                        "seriesType": "bar",
+                                        "xAccessor": "bar_x",
+                                        "yConfig": [
+                                            {
+                                                "axisMode": "left",
+                                                "forAccessor": "bar_y_0"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar",
+                                "xExtent": {
+                                    "mode": "dataBounds",
+                                    "niceValues": false
+                                }
+                            }
+                        },
+                        "title": "",
+                        "visualizationType": "lnsXY"
+                    },
+                    "title": "Est. storage cost per day"
+                },
+                "gridData": {
+                    "h": 11,
+                    "i": "storage-cost-per-day",
+                    "w": 24,
+                    "x": 0,
+                    "y": 30
+                },
+                "panelIndex": "storage-cost-per-day",
                 "type": "vis"
             },
             {
@@ -1237,11 +1459,11 @@
                     "title": "API transactions per day by class"
                 },
                 "gridData": {
-                    "h": 12,
+                    "h": 11,
                     "i": "api-transactions-by-class",
                     "w": 24,
-                    "x": 0,
-                    "y": 27
+                    "x": 24,
+                    "y": 30
                 },
                 "panelIndex": "api-transactions-by-class",
                 "type": "vis"
@@ -1252,12 +1474,12 @@
                         "references": [],
                         "state": {
                             "adHocDataViews": {
-                                "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225": {
+                                "logs-backblaze_b2.usage-*-3bdc3b61373f4dc4cd6d17a547dba426c0f19ee8a7a8c06a2ecb7829cedc8959": {
                                     "allowHidden": false,
                                     "allowNoIndex": false,
                                     "fieldAttrs": {},
                                     "fieldFormats": {},
-                                    "id": "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225",
+                                    "id": "logs-backblaze_b2.usage-*-3bdc3b61373f4dc4cd6d17a547dba426c0f19ee8a7a8c06a2ecb7829cedc8959",
                                     "name": "logs-backblaze_b2.usage-*",
                                     "runtimeFieldMap": {},
                                     "sourceFilters": [],
@@ -1367,9 +1589,9 @@
                                                     }
                                                 }
                                             ],
-                                            "index": "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225",
+                                            "index": "logs-backblaze_b2.usage-*-3bdc3b61373f4dc4cd6d17a547dba426c0f19ee8a7a8c06a2ecb7829cedc8959",
                                             "query": {
-                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | STATS `Stored now` = SUM(CASE(@timestamp == latest_day, backblaze_b2.usage.stored_gb, 0.0)), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp), Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb), Downloaded = SUM(backblaze_b2.usage.downloaded_gb) BY Bucket = entity.name | EVAL `Est. storage cost / month` = gb_days / days * 6.95 / 1000.0 | KEEP Bucket, `Stored now`, Uploaded, Deleted, Downloaded, `Est. storage cost / month` | SORT `Stored now` DESC"
+                                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | STATS `Stored now` = SUM(CASE(@timestamp == latest_day, backblaze_b2.usage.stored_gb, 0.0)), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp), Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb), Downloaded = SUM(backblaze_b2.usage.downloaded_gb) BY Bucket = entity.name | EVAL `Est. storage cost / month` = gb_days / days * TO_DOUBLE(?price_per_tb) / 1000.0 | KEEP Bucket, `Stored now`, Uploaded, Deleted, Downloaded, `Est. storage cost / month` | SORT `Stored now` DESC"
                                             }
                                         }
                                     }
@@ -1378,13 +1600,13 @@
                             "filters": [],
                             "internalReferences": [
                                 {
-                                    "id": "logs-backblaze_b2.usage-*-49b72c94470d93d0acde7bf2584c29a26abdbba94c4851170e8267469ab6f225",
+                                    "id": "logs-backblaze_b2.usage-*-3bdc3b61373f4dc4cd6d17a547dba426c0f19ee8a7a8c06a2ecb7829cedc8959",
                                     "name": "indexpattern-datasource-layer-layer_0",
                                     "type": "index-pattern"
                                 }
                             ],
                             "query": {
-                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | STATS `Stored now` = SUM(CASE(@timestamp == latest_day, backblaze_b2.usage.stored_gb, 0.0)), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp), Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb), Downloaded = SUM(backblaze_b2.usage.downloaded_gb) BY Bucket = entity.name | EVAL `Est. storage cost / month` = gb_days / days * 6.95 / 1000.0 | KEEP Bucket, `Stored now`, Uploaded, Deleted, Downloaded, `Est. storage cost / month` | SORT `Stored now` DESC"
+                                "esql": "FROM logs-backblaze_b2.usage-* | WHERE data_stream.dataset == \"backblaze_b2.usage\" AND backblaze_b2.usage.scope == \"bucket\" | INLINE STATS latest_day = MAX(@timestamp) | STATS `Stored now` = SUM(CASE(@timestamp == latest_day, backblaze_b2.usage.stored_gb, 0.0)), gb_days = SUM(backblaze_b2.usage.storage_byte_hours) / 24.0 / 1000000000.0, days = COUNT_DISTINCT(@timestamp), Uploaded = SUM(backblaze_b2.usage.uploaded_gb), Deleted = SUM(backblaze_b2.usage.deleted_gb), Downloaded = SUM(backblaze_b2.usage.downloaded_gb) BY Bucket = entity.name | EVAL `Est. storage cost / month` = gb_days / days * TO_DOUBLE(?price_per_tb) / 1000.0 | KEEP Bucket, `Stored now`, Uploaded, Deleted, Downloaded, `Est. storage cost / month` | SORT `Stored now` DESC"
                             },
                             "visualization": {
                                 "columns": [
@@ -1432,23 +1654,96 @@
                 "gridData": {
                     "h": 12,
                     "i": "usage-by-bucket-table",
-                    "w": 24,
-                    "x": 24,
-                    "y": 27
+                    "w": 48,
+                    "x": 0,
+                    "y": 41
                 },
                 "panelIndex": "usage-by-bucket-table",
                 "type": "vis"
             }
         ],
+        "pinned_panels": {
+            "panels": {
+                "control-bucket": {
+                    "config": {
+                        "dataViewRefName": "control-bucket:optionsListDataView",
+                        "exclude": false,
+                        "exists_selected": false,
+                        "field_name": "entity.name",
+                        "ignore_validations": false,
+                        "run_past_timeout": false,
+                        "search_technique": "wildcard",
+                        "selected_options": [],
+                        "single_select": false,
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Bucket",
+                        "use_global_filters": true
+                    },
+                    "grow": false,
+                    "order": 0,
+                    "type": "options_list_control",
+                    "width": "medium"
+                },
+                "control-price": {
+                    "config": {
+                        "available_options": [
+                            "6.95",
+                            "6.00"
+                        ],
+                        "control_type": "STATIC_VALUES",
+                        "selected_options": [
+                            "6.95"
+                        ],
+                        "single_select": true,
+                        "title": "Storage price ($/TB-month)",
+                        "variable_name": "price_per_tb",
+                        "variable_type": "values"
+                    },
+                    "grow": false,
+                    "order": 1,
+                    "type": "esql_control",
+                    "width": "small"
+                }
+            }
+        },
         "timeFrom": "now-30d",
         "timeRestore": true,
         "timeTo": "now",
         "title": "[Logs Backblaze B2] Storage usage and costs"
     },
     "coreMigrationVersion": "8.8.0",
-    "created_at": "2026-09-15T07:27:01.735Z",
+    "created_at": "2026-09-15T15:14:15.361Z",
     "id": "backblaze_b2-storage-usage-costs",
-    "references": [],
+    "references": [
+        {
+            "id": "logs-*",
+            "name": "control-bucket:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+            "type": "index-pattern"
+        },
+        {
+            "id": "backblaze_b2-storage-usage-costs",
+            "name": "dashboard-navigation:link_0_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "backblaze_b2-bucket-activity",
+            "name": "dashboard-navigation:link_1_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "backblaze_b2-bucket-inventory",
+            "name": "dashboard-navigation:link_2_dashboard",
+            "type": "dashboard"
+        }
+    ],
     "type": "dashboard",
     "typeMigrationVersion": "10.3.0"
 }

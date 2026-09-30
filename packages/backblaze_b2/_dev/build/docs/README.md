@@ -75,8 +75,8 @@ Elastic Agent is required to read data from Backblaze B2 and ship the data to El
 2. Filter on `data_stream.dataset` with one of `backblaze_b2.access`, `backblaze_b2.usage`, or `backblaze_b2.bucket`.
 3. Confirm that events are arriving. Access logs can take several hours to appear after requests are made.
 4. Open the dashboards:
-   - **[Logs Backblaze B2] Storage usage and costs**: daily storage, transfer, and estimated cost. Costs use $6.95 per TB-month.
-   - **[Logs Backblaze B2] Bucket activity**: uploads, downloads, and deletions.
+   - **[Logs Backblaze B2] Storage usage and costs**: daily storage, transfer, backup freshness, and estimated cost. Costs use the storage price selected on the dashboard, $6.95 per TB-month by default.
+   - **[Logs Backblaze B2] Bucket activity**: uploads, downloads, and deletions, including activity by hour.
    - **[Logs Backblaze B2] Bucket inventory**: current settings for each bucket.
 
 ## Troubleshooting
