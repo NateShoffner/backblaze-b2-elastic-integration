@@ -1,7 +1,11 @@
-# elastic-package build output (repo root only; packages use _dev/build)
+# elastic-package build output (repo root only, not packages/*/_dev/build)
 /build/
+*.tar.gz
 
-# Local credentials and scratch data
+# Raw B2 data pulled from live accounts. Never commit: contains real account and
+# bucket names, application key ids, client addresses, and backup file paths.
+samples/private/
+
+# Local credentials and scratch config
 .env
 *.local.yml
-samples/private/

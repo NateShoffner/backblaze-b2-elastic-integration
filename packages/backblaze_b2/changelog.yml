@@ -3,4 +3,4 @@
   changes:
     - description: Initial release with access, usage, and bucket data streams and dashboards.
       type: enhancement
-      link: https://github.com/NateShoffner/elastic-integration-backblaze/pull/1
+      link: https://github.com/NateShoffner/backblaze-b2-elastic-integration/issues/1
