@@ -54,10 +54,15 @@ processors:
       tag: set_cloud_service_name
       field: cloud.service.name
       value: b2
+  # The B2 account owns `cloud.account.id` in this data stream, so the rename
+  # overrides rather than fails. When the agent runs on a cloud instance its
+  # `add_cloud_metadata` processor has already set the field to the host's own
+  # account, and without `override` the rename fails for every document.
   - rename:
       tag: rename_json_account_id
       field: json.accountId
       target_field: cloud.account.id
+      override: true
       if: ctx.json?.accountId != null
 
   # Entity (the bucket this inventory record describes)
