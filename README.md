@@ -51,8 +51,12 @@ elastic-package check            # lint and build
 elastic-package stack up -d -v   # needed by the test commands below
 elastic-package test pipeline    # ingest pipeline tests
 elastic-package test policy      # agent policy rendering tests
-elastic-package test system --data-streams bucket   # end-to-end against a mock B2 API
+elastic-package test system      # end-to-end against a mock B2 API
 ```
+
+Only `bucket` has system tests; it is the one data stream with a docker-based
+mock. The `access` and `usage` streams read from S3 and are covered by pipeline
+and policy tests instead.
 
 Edit documentation in `_dev/build/docs/README.md`, never in `docs/README.md`,
 which is regenerated on every build. Dashboards are exported saved objects in
@@ -68,9 +72,12 @@ Bump `version` in `packages/backblaze_b2/manifest.yml`, add a matching
 git tag v0.2.0 && git push origin v0.2.0
 ```
 
-CI verifies the tag matches the manifest version, builds the package, and
-publishes a GitHub release with the `.zip` attached and notes drawn from the
-changelog entry.
+CI verifies the tag matches the manifest version, runs the tests, builds the
+package, and publishes a GitHub release with the `.zip` attached, a build
+provenance attestation, and notes drawn from the changelog entry.
+
+Both CI and the release run on the shared reusable workflows in
+[`NateShoffner/elastic-package-workflows`](https://github.com/NateShoffner/elastic-package-workflows).
 
 ## License
 
